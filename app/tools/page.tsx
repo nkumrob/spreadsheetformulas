@@ -25,6 +25,14 @@ const TOOLS = [
     live: true,
   },
   {
+    href: "/tools/analyze-workbook",
+    mark: "=CHECKUP()",
+    name: "Spreadsheet Health Check",
+    blurb:
+      "Upload a workbook for an instant report: error cells, stale values, numbers stored as text, inconsistent formulas — then test formulas against your real data. The file never leaves your browser.",
+    live: true,
+  },
+  {
     href: "/tools/ai",
     mark: "=AI()",
     name: "AI Formula Generator",
@@ -44,7 +52,7 @@ export default function ToolsPage() {
           standard as our formula pages.
         </p>
       </header>
-      <div className="mt-10 grid max-w-4xl gap-4 sm:grid-cols-3">
+      <div className="mt-10 grid max-w-4xl gap-4 sm:grid-cols-2">
         {TOOLS.map((tool) => (
           <Link
             key={tool.href}

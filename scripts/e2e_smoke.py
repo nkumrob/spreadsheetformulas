@@ -68,7 +68,18 @@ with sync_playwright() as p:
     with urllib.request.urlopen(request) as response:
         check("xlsx download 200", response.status == 200)
 
-    # 7. Error page + 404.
+    # 7. Workbook analyzer: upload our own template, expect report + live formula test.
+    page.goto(f"{BASE}/tools/analyze-workbook")
+    page.wait_for_load_state("networkidle")
+    page.set_input_files("input[type=file]", "public/templates/budget-tracker.xlsx")
+    page.wait_for_selector("text=budget-tracker.xlsx", timeout=15000)
+    check("analyzer parsed workbook", "cells" in page.content() and "formulas" in page.content())
+    page.fill("textarea", "=SUM(B2:B6)")
+    page.click("text=Run it")
+    page.wait_for_timeout(1500)
+    check("analyzer computed user formula", "25600" in page.content())
+
+    # 8. Error page + 404.
     page.goto(f"{BASE}/errors/fix-spill-error")
     page.wait_for_load_state("networkidle")
     check("new error page renders", "#SPILL!" in page.content())

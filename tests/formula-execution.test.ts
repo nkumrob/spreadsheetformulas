@@ -1,6 +1,7 @@
 import { HyperFormula, DetailedCellError } from "hyperformula";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { allFormulas } from "@/lib/content";
+import { ENGINE_MISSING } from "@/lib/formula-check";
 
 /**
  * Layer-1 verification: every formula page's `verification` block is executed
@@ -9,13 +10,6 @@ import { allFormulas } from "@/lib/content";
  */
 
 export const FROZEN_TODAY = new Date(2026, 6, 8, 12, 0, 0); // 2026-07-08
-
-/** Functions HyperFormula does not implement (probed at setup). Pages whose
- *  formulas use one of these may declare `verification: null`. */
-const ENGINE_MISSING = new Set([
-  "LOOKUP", "AVERAGEIFS", "TEXTBEFORE", "TEXTAFTER", "TEXTSPLIT",
-  "UNIQUE", "SORT", "RANK", "REGEXEXTRACT", "QUERY",
-]);
 
 /** Pages exempt for reasons other than a missing function — each needs a reason. */
 const EXEMPT: Record<string, string> = {};

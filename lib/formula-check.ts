@@ -14,7 +14,7 @@ export type Finding = {
   link?: string;
 };
 
-const ERROR_LINKS: Record<string, string> = {
+export const ERROR_LINKS: Record<string, string> = {
   "#N/A": "/errors/fix-na-error",
   "#VALUE!": "/errors/fix-value-error",
   "#REF!": "/errors/fix-ref-error",
@@ -23,6 +23,12 @@ const ERROR_LINKS: Record<string, string> = {
   "#SPILL!": "/errors/fix-spill-error",
   "#NUM!": "/errors/fix-num-error",
 };
+
+/** Functions the HyperFormula engine does not implement (probed against 3.3). */
+export const ENGINE_MISSING = new Set([
+  "LOOKUP", "AVERAGEIFS", "TEXTBEFORE", "TEXTAFTER", "TEXTSPLIT",
+  "UNIQUE", "SORT", "RANK", "REGEXEXTRACT", "QUERY",
+]);
 
 const KNOWN_FUNCTIONS = new Set([
   "ABS", "AND", "ARRAYFORMULA", "AVERAGE", "AVERAGEA", "AVERAGEIF", "AVERAGEIFS",
