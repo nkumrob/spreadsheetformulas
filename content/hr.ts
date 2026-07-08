@@ -63,6 +63,24 @@ export const hrFormulas: Formula[] = [
     related: ["count-if-multiple-conditions", "calculate-completion-percentage", "flag-overdue-tasks"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Employee", "Department", "Module", "Status"],
+          ["Ana Torres", "Sales", "Safety 101", "Complete"],
+          ["Ben Okafor", "Finance", "Safety 101", "Complete"],
+          ["Cara Lim", "Sales", "Safety 101", "In Progress"],
+          ["Dana Cruz", "Sales", "Safety 101", "Complete"],
+          ["Eli Ford", "Ops", "Safety 101", "Not Started"],
+          ["Sales completions", '=COUNTIFS(B2:B6,"Sales",D2:D6,"Complete")', null, null],
+          ["Finance completions", '=COUNTIFS(B2:B6,"Finance",D2:D6,"Complete")', null, null],
+        ],
+      },
+      expect: [
+        { cell: "B7", value: 2 },
+        { cell: "B8", value: 1 },
+      ],
+    },
   },
   {
     slug: "count-overdue-training-by-manager",
@@ -126,6 +144,36 @@ export const hrFormulas: Formula[] = [
     related: ["flag-overdue-tasks", "calculate-days-overdue", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Employee", "Module", "Manager", "Status", "Due Date"],
+          ["Ana Torres", "Safety 101", "Ben Okafor", "In Progress", "2026-06-15"],
+          ["Cara Lim", "Safety 101", "Ben Okafor", "Complete", "2026-06-15"],
+          ["Dana Cruz", "Safety 101", "Ben Okafor", "Not Started", "2026-06-30"],
+          ["Eli Ford", "Safety 101", "Cara Lim", "In Progress", "2026-06-20"],
+          ["Fay Adjei", "Safety 101", "Ben Okafor", "In Progress", "2026-07-20"],
+          [
+            "Overdue under Ben Okafor",
+            null,
+            '=COUNTIFS(C2:C6,"Ben Okafor",E2:E6,"<"&TODAY(),D2:D6,"<>Complete")',
+            null,
+            null,
+          ],
+          [
+            "Overdue under Cara Lim",
+            null,
+            '=COUNTIFS(C2:C6,"Cara Lim",E2:E6,"<"&TODAY(),D2:D6,"<>Complete")',
+            null,
+            null,
+          ],
+        ],
+      },
+      expect: [
+        { cell: "C7", value: 2 },
+        { cell: "C8", value: 1 },
+      ],
+    },
   },
   {
     slug: "build-skills-matrix-formula",
@@ -189,5 +237,23 @@ export const hrFormulas: Formula[] = [
     related: ["count-if-multiple-conditions", "sum-if-multiple-conditions", "calculate-completion-percentage"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Person", "Skill", "Level"],
+          ["Ana Torres", "Excel", 4],
+          ["Ben Okafor", "Excel", 2],
+          ["Cara Lim", "Excel", 3],
+          ["Dana Cruz", "Payroll", 5],
+          ["Eli Ford", "Excel", 5],
+          ["Excel at level 3+", '=COUNTIFS(B2:B6,"Excel",C2:C6,">=3")', null],
+          ["Excel below level 3", '=COUNTIFS(B2:B6,"Excel",C2:C6,"<3")', null],
+        ],
+      },
+      expect: [
+        { cell: "B7", value: 3 },
+        { cell: "B8", value: 1 },
+      ],
+    },
   },
 ];

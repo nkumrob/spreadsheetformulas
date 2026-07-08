@@ -60,6 +60,21 @@ export const dates2Formulas: Formula[] = [
     related: ["calculate-days-overdue", "flag-overdue-tasks", "calculate-invoice-due-date"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Task", "Due Date", "Days Remaining"],
+          ["Book venue", "2026-07-15", "=MAX(0,B2-TODAY())"],
+          ["Send contract", "2026-07-20", "=MAX(0,B3-TODAY())"],
+          ["File permits", "2026-07-01", "=MAX(0,B4-TODAY())"],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 7 },
+        { cell: "C3", value: 12 },
+        { cell: "C4", value: 0 },
+      ],
+    },
   },
   {
     slug: "calculate-percentage-change",
@@ -120,6 +135,21 @@ export const dates2Formulas: Formula[] = [
     related: ["calculate-completion-percentage", "calculate-budget-variance", "fix-div0-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["June", "July", "Change"],
+          [8000, 9200, "=(B2-A2)/A2"],
+          [5000, 4500, "=(B3-A3)/A3"],
+          [0, 1200, "=(B4-A4)/A4"],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 0.15 },
+        { cell: "C3", value: -0.1 },
+        { cell: "C4", value: "#DIV/0!" },
+      ],
+    },
   },
   {
     slug: "summarize-by-month",
@@ -177,6 +207,21 @@ export const dates2Formulas: Formula[] = [
     related: ["sum-if-multiple-conditions", "group-dates-by-month", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Invoice", "Date", "Amount", null, "July Total", "June Total"],
+          ["INV-101", "2026-06-28", 1200, null, '=SUMIFS(C2:C5,B2:B5,">="&DATE(2026,7,1),B2:B5,"<"&DATE(2026,8,1))', '=SUMIFS(C2:C5,B2:B5,">="&DATE(2026,6,1),B2:B5,"<"&DATE(2026,7,1))'],
+          ["INV-102", "2026-07-03", 800, null, null, null],
+          ["INV-103", "2026-07-21", 1500, null, null, null],
+          ["INV-104", "2026-08-02", 950, null, null, null],
+        ],
+      },
+      expect: [
+        { cell: "E2", value: 2300 },
+        { cell: "F2", value: 1200 },
+      ],
+    },
   },
   {
     slug: "group-dates-by-month",
@@ -236,5 +281,20 @@ export const dates2Formulas: Formula[] = [
     related: ["summarize-by-month", "count-if-multiple-conditions", "sum-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Invoice", "Date", "Month"],
+          ["INV-101", "2026-06-28", '=TEXT(B2,"yyyy-mm")'],
+          ["INV-102", "2026-07-03", '=TEXT(B3,"yyyy-mm")'],
+          ["INV-103", "2026-07-21", '=TEXT(B4,"yyyy-mm")'],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: "2026-06" },
+        { cell: "C3", value: "2026-07" },
+        { cell: "C4", value: "2026-07" },
+      ],
+    },
   },
 ];

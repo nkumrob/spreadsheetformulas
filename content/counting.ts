@@ -57,6 +57,20 @@ export const countingFormulas: Formula[] = [
     related: ["sum-if-multiple-conditions", "calculate-completion-percentage", "flag-overdue-tasks"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Department", "Task", "Status"],
+          ["Sales", "Q3 forecast", "Overdue"],
+          ["Finance", "Close books", "Complete"],
+          ["Sales", "Pipeline review", "Overdue"],
+          ["Sales", "CRM cleanup", "Complete"],
+          ["Ops", "Vendor audit", "Overdue"],
+          ["Result", '=COUNTIFS(A2:A6,"Sales",C2:C6,"Overdue")', null],
+        ],
+      },
+      expect: [{ cell: "B7", value: 2 }],
+    },
   },
   {
     slug: "sum-if-multiple-conditions",
@@ -110,6 +124,19 @@ export const countingFormulas: Formula[] = [
     related: ["count-if-multiple-conditions", "calculate-completion-percentage"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Region", "Units", "Revenue"],
+          ["Sales", 140, 2800],
+          ["Sales", 80, 1600],
+          ["East", 200, 4000],
+          ["Sales", 150, 3000],
+          ["Result", '=SUMIFS(C2:C5,A2:A5,"Sales",B2:B5,">100")', null],
+        ],
+      },
+      expect: [{ cell: "B6", value: 5800 }],
+    },
   },
   {
     slug: "calculate-completion-percentage",
@@ -174,5 +201,19 @@ export const countingFormulas: Formula[] = [
     related: ["count-if-multiple-conditions", "flag-overdue-tasks", "fix-div0-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Employee", "Status"],
+          ["Ana Torres", "Complete"],
+          ["Ben Okafor", "In Progress"],
+          ["Cara Lim", "Complete"],
+          ["Dana Cruz", "Complete"],
+          ["Eli Ford", "Not Started"],
+          ["Rate", "=COUNTIF(B2:B6,\"Complete\")/COUNTA(B2:B6)"],
+        ],
+      },
+      expect: [{ cell: "B7", value: 0.6 }],
+    },
   },
 ];

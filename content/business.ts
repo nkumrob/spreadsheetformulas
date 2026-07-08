@@ -66,6 +66,21 @@ export const businessFormulas: Formula[] = [
     related: ["create-pass-fail-status", "count-if-multiple-conditions", "flag-overdue-tasks"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Item", "On Hand", "Reorder Point", "Status"],
+          ["Boxes", 40, 50, '=IF(B2<=C2,"Reorder","OK")'],
+          ["Tape", 120, 60, '=IF(B3<=C3,"Reorder","OK")'],
+          ["Labels", 55, 55, '=IF(B4<=C4,"Reorder","OK")'],
+        ],
+      },
+      expect: [
+        { cell: "D2", value: "Reorder" },
+        { cell: "D3", value: "OK" },
+        { cell: "D4", value: "Reorder" },
+      ],
+    },
   },
   {
     slug: "calculate-sales-commission",
@@ -131,6 +146,23 @@ export const businessFormulas: Formula[] = [
     related: ["calculate-profit-margin", "create-status-multiple-conditions", "sum-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Rep", "Sales", "Rate", "Flat", "Tiered"],
+          ["Ana Torres", 30000, 0.05, "=B2*C2", "=B2*IF(B2>=50000,0.08,IF(B2>=25000,0.06,0.04))"],
+          ["Ben Okafor", 52000, 0.05, "=B3*C3", "=B3*IF(B3>=50000,0.08,IF(B3>=25000,0.06,0.04))"],
+          ["Cara Lim", 50000, 0.05, null, "=B4*IF(B4>=50000,0.08,IF(B4>=25000,0.06,0.04))"],
+        ],
+      },
+      expect: [
+        { cell: "D2", value: 1500 },
+        { cell: "D3", value: 2600 },
+        { cell: "E2", value: 1800 },
+        { cell: "E3", value: 4160 },
+        { cell: "E4", value: 4000 },
+      ],
+    },
   },
   {
     slug: "track-job-applications",
@@ -197,5 +229,22 @@ export const businessFormulas: Formula[] = [
     related: ["count-if-status-complete", "calculate-completion-percentage", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Company", "Role", "Date", "Status"],
+          ["Northwind", "Analyst", "2026-06-12", "Interview"],
+          ["Acme Co", "Project Mgr", "2026-06-20", "Applied"],
+          ["Globex", "Analyst", "2026-06-25", "Interview"],
+          ["Initech", "Designer", "2026-07-01", "Rejected"],
+          ["Interview count", '=COUNTIF(D2:D5,"Interview")', '=COUNTIF(D2:D5,"Applied")', '=COUNTIF(D2:D5,"Rejected")'],
+        ],
+      },
+      expect: [
+        { cell: "B6", value: 2 },
+        { cell: "C6", value: 1 },
+        { cell: "D6", value: 1 },
+      ],
+    },
   },
 ];

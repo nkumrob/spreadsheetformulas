@@ -62,6 +62,25 @@ export const highlightingFormulas: Formula[] = [
     related: ["count-blanks", "remove-extra-spaces", "find-missing-values"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Email", "Result"],
+          ["ana@co.com", '=IF(A2="","Blank","Filled")'],
+          [null, '=IF(A3="","Blank","Filled")'],
+          ["cara@co.com", '=IF(A4="","Blank","Filled")'],
+          [" ", '=IF(A5="","Blank","Filled")'],
+          [" ", '=IF(TRIM(A6)="","Blank","Filled")'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Filled" },
+        { cell: "B3", value: "Blank" },
+        // A lone space slips through as Filled (documented mistake); TRIM catches it.
+        { cell: "B5", value: "Filled" },
+        { cell: "B6", value: "Blank" },
+      ],
+    },
   },
   {
     slug: "count-blanks",
@@ -122,6 +141,27 @@ export const highlightingFormulas: Formula[] = [
     related: ["find-blanks", "count-if-status-complete", "calculate-completion-percentage"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Phone", "Result"],
+          ["555-0104", "=COUNTBLANK(A2:A6)"],
+          [null, "=COUNTA(A2:A6)"],
+          ["555-0317", "=COUNTBLANK(A2:A7)"],
+          [null],
+          ["555-0221"],
+          [" "],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: 2 },
+        // COUNTBLANK + COUNTA covers the whole range: 2 + 3 = 5 cells.
+        { cell: "B3", value: 3 },
+        // A7 holds a single space, so widening the range doesn't add a blank
+        // (documented mistake: space-only cells aren't counted).
+        { cell: "B4", value: 2 },
+      ],
+    },
   },
   {
     slug: "highlight-duplicates",
@@ -184,6 +224,27 @@ export const highlightingFormulas: Formula[] = [
     related: ["count-duplicates", "remove-duplicates", "highlight-overdue-dates"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Invoice #", "Rule Result", "Locked-Cell Mistake"],
+          ["INV-1041", "=COUNTIF($A$2:$A$6,A2)>1"],
+          ["INV-1042", "=COUNTIF($A$2:$A$6,A3)>1"],
+          ["INV-1041", "=COUNTIF($A$2:$A$6,A4)>1"],
+          ["INV-1043", "=COUNTIF($A$2:$A$6,A5)>1", "=COUNTIF($A$2:$A$6,$A$2)>1"],
+          ["INV-1042", "=COUNTIF($A$2:$A$6,A6)>1"],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: true },
+        { cell: "B4", value: true },
+        { cell: "B5", value: false },
+        { cell: "B6", value: true },
+        // Documented mistake: fully locking the checked cell ($A$2) makes the
+        // unique INV-1043 row highlight too, because it counts A2's value.
+        { cell: "C5", value: true },
+      ],
+    },
   },
   {
     slug: "highlight-overdue-dates",
@@ -250,5 +311,30 @@ export const highlightingFormulas: Formula[] = [
     related: ["flag-overdue-tasks", "calculate-days-overdue", "highlight-duplicates"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Task", "Due Date", "Status", "Rule Result"],
+          ["Send invoices", "2026-07-01", "Complete", '=AND($B2<TODAY(),$C2<>"Complete")'],
+          ["Update roster", "2026-07-03", "In Progress", '=AND($B3<TODAY(),$C3<>"Complete")'],
+          ["Q3 budget", "2026-07-15", "In Progress", '=AND($B4<TODAY(),$C4<>"Complete")'],
+          ["File report", "2026-06-28", "Not Started", '=AND($B5<TODAY(),$C5<>"Complete")'],
+          ["No deadline", null, "In Progress", '=AND($B6<TODAY(),$C6<>"Complete")'],
+          ["No deadline", null, "In Progress", '=AND($B7<>"",$B7<TODAY(),$C7<>"Complete")'],
+        ],
+      },
+      expect: [
+        // 2026-07-01 is past, but the task is Complete — no highlight.
+        { cell: "D2", value: false },
+        { cell: "D3", value: true },
+        // 2026-07-15 is after the frozen TODAY() of 2026-07-08.
+        { cell: "D4", value: false },
+        { cell: "D5", value: true },
+        // Documented mistake: a blank due date counts as zero, so it flags as
+        // overdue; the $B7<>"" guard fixes it.
+        { cell: "D6", value: true },
+        { cell: "D7", value: false },
+      ],
+    },
   },
 ];

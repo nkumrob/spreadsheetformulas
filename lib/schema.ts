@@ -9,6 +9,29 @@ export const tableSchema = z.object({
 
 export type SampleTable = z.infer<typeof tableSchema>;
 
+const gridCell = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+
+/**
+ * Executable proof for a formula page (ticket layer-1 verification).
+ * `sheets` holds raw grids (strings starting with "=" are formulas; dates as
+ * "YYYY-MM-DD" strings). `expect` pins computed cell values, evaluated by the
+ * HyperFormula engine in CI with the clock frozen to 2026-07-08.
+ * `null` = engine can't verify this page (uses functions the engine lacks).
+ */
+export const verificationSchema = z.object({
+  sheets: z.record(z.string(), z.array(z.array(gridCell)).min(1)),
+  expect: z
+    .array(
+      z.object({
+        cell: z.string().regex(/^(?:[A-Za-z0-9_]+!)?[A-Z]{1,3}[0-9]+$/),
+        value: z.union([z.string(), z.number(), z.boolean()]),
+      }),
+    )
+    .min(1),
+});
+
+export type Verification = z.infer<typeof verificationSchema>;
+
 export const formulaSchema = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),
   kind: z.enum(["formula", "error-fix"]),
@@ -34,6 +57,7 @@ export const formulaSchema = z.object({
   related: z.array(z.string()),
   lastReviewed: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   published: z.boolean(),
+  verification: verificationSchema.nullable().optional(),
 });
 
 export type Formula = z.infer<typeof formulaSchema>;

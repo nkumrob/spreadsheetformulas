@@ -60,6 +60,22 @@ export const logicFormulas: Formula[] = [
     related: ["create-status-multiple-conditions", "flag-overdue-tasks", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Name", "Score", "Status"],
+          ["Ana Torres", 88, '=IF(B2>=70,"Pass","Fail")'],
+          ["Ben Okafor", 64, '=IF(B3>=70,"Pass","Fail")'],
+          // Boundary case: exactly at the cutoff passes because of >=.
+          ["Cara Lim", 70, '=IF(B4>=70,"Pass","Fail")'],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: "Pass" },
+        { cell: "C3", value: "Fail" },
+        { cell: "C4", value: "Pass" },
+      ],
+    },
   },
   {
     slug: "create-status-multiple-conditions",
@@ -120,6 +136,25 @@ export const logicFormulas: Formula[] = [
     related: ["create-pass-fail-status", "flag-overdue-tasks", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Name", "Score", "Rating"],
+          ["Ana Torres", 94, '=IFS(B2>=90,"Excellent",B2>=70,"Pass",TRUE,"Fail")'],
+          // Catch-all case: below both thresholds lands on TRUE,"Fail".
+          ["Ben Okafor", 58, '=IFS(B3>=90,"Excellent",B3>=70,"Pass",TRUE,"Fail")'],
+          ["Cara Lim", 76, '=IFS(B4>=90,"Excellent",B4>=70,"Pass",TRUE,"Fail")'],
+          // Boundary case: exactly 90 hits the first condition.
+          ["Dana Cruz", 90, '=IFS(B5>=90,"Excellent",B5>=70,"Pass",TRUE,"Fail")'],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: "Excellent" },
+        { cell: "C3", value: "Fail" },
+        { cell: "C4", value: "Pass" },
+        { cell: "C5", value: "Excellent" },
+      ],
+    },
   },
   {
     slug: "find-highest-value-by-category",
@@ -177,6 +212,25 @@ export const logicFormulas: Formula[] = [
     related: ["find-lowest-value-by-category", "sum-if-multiple-conditions", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        // Formulas live in column E so the whole-column C:C / A:A references
+        // don't include the formula cells themselves (that would be #CYCLE!).
+        Sheet1: [
+          ["Dept", "Rep", "Amount", null, '=MAXIFS(C:C,A:A,"Sales")'],
+          ["Sales", "Ana Torres", 8200, null, '=MAXIFS(C:C,A:A,"Finance")'],
+          // No matching rows returns 0, not an error — as the page explains.
+          ["Finance", "Ben Okafor", 9100, null, '=MAXIFS(C:C,A:A,"Ops")'],
+          ["Sales", "Cara Lim", 6400, null, null],
+          ["Sales", "Dana Cruz", 7500, null, null],
+        ],
+      },
+      expect: [
+        { cell: "E1", value: 8200 },
+        { cell: "E2", value: 9100 },
+        { cell: "E3", value: 0 },
+      ],
+    },
   },
   {
     slug: "find-lowest-value-by-category",
@@ -234,5 +288,26 @@ export const logicFormulas: Formula[] = [
     related: ["find-highest-value-by-category", "sum-if-multiple-conditions", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        // Formulas live in column E so the whole-column C:C / A:A references
+        // don't include the formula cells themselves (that would be #CYCLE!).
+        Sheet1: [
+          ["Dept", "Rep", "Amount", null, '=MINIFS(C:C,A:A,"Sales")'],
+          ["Sales", "Ana Torres", 8200, null, '=MINIFS(C:C,A:A,"Sales",C:C,">0")'],
+          ["Finance", "Ben Okafor", 9100, null, '=MINIFS(C:C,A:A,"Finance")'],
+          ["Sales", "Cara Lim", 6400, null, null],
+          ["Sales", "Dana Cruz", 7500, null, null],
+          // The zero row drags the plain MINIFS down to 0 — the pitfall
+          // from commonMistakes; the ">0" second condition excludes it.
+          ["Sales", "Evan Reed", 0, null, null],
+        ],
+      },
+      expect: [
+        { cell: "E1", value: 0 },
+        { cell: "E2", value: 6400 },
+        { cell: "E3", value: 9100 },
+      ],
+    },
   },
 ];

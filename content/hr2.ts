@@ -68,6 +68,23 @@ export const hr2Formulas: Formula[] = [
     related: ["calculate-completion-percentage", "fix-div0-error", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Employee", "Attended", "Scheduled", "Attendance"],
+          ["Ana Torres", 8, 10, "=B2/C2"],
+          ["Ben Okafor", 10, 10, "=B3/C3"],
+          ["Cara Lim", 6, 8, "=B4/C4"],
+          ["Dana Cruz", 0, 0, '=IF(C5=0,"",B5/C5)'],
+        ],
+      },
+      expect: [
+        { cell: "D2", value: 0.8 },
+        { cell: "D3", value: 1 },
+        { cell: "D4", value: 0.75 },
+        { cell: "D5", value: "" },
+      ],
+    },
   },
   {
     slug: "calculate-average-score-by-group",
@@ -132,5 +149,23 @@ export const hr2Formulas: Formula[] = [
     related: ["sum-if-multiple-conditions", "count-if-multiple-conditions", "fix-div0-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Department", "Employee", "Score"],
+          ["Sales", "Ana Torres", 88],
+          ["Finance", "Ben Okafor", 92],
+          ["Sales", "Cara Lim", 76],
+          ["Sales", "Dana Cruz", 90],
+          ["Ops", "Eli Ford", 81],
+          ["Sales average", null, '=AVERAGEIF(A2:A6,"Sales",C2:C6)'],
+          ["Finance average", null, '=AVERAGEIF(A2:A6,"Finance",C2:C6)'],
+        ],
+      },
+      expect: [
+        { cell: "C7", value: 254 / 3 },
+        { cell: "C8", value: 92 },
+      ],
+    },
   },
 ];

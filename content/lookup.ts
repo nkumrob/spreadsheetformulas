@@ -62,6 +62,21 @@ export const lookupFormulas: Formula[] = [
     related: ["vlookup-exact-match", "count-if-multiple-conditions", "remove-extra-spaces"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Old Email", "New Email", "Result"],
+          ["ana@co.com", "ana@co.com", '=IF(A2=B2,"Match","Mismatch")'],
+          ["ben@co.com", "ben@corp.com", '=IF(A3=B3,"Match","Mismatch")'],
+          ["dev@co.com", "devon@co.com", '=IF(COUNTIF(B2:B4,A4)>0,"In list","Missing")'],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: "Match" },
+        { cell: "C3", value: "Mismatch" },
+        { cell: "C4", value: "Missing" },
+      ],
+    },
   },
   {
     slug: "vlookup-exact-match",
@@ -123,6 +138,22 @@ export const lookupFormulas: Formula[] = [
     related: ["xlookup-basic-example", "index-match-lookup", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Product", "Price", null, "Lookup", "Result"],
+          ["Notebook", 4.5, null, "Monitor", "=VLOOKUP(D2,A2:B5,2,FALSE)"],
+          ["Stapler", 12, null, "Stapler", "=VLOOKUP(D3,A2:B5,2,FALSE)"],
+          ["Monitor", 189, null, "Widget", '=IFERROR(VLOOKUP(D4,A2:B5,2,FALSE),"Not found")'],
+          ["Desk Lamp", 34, null, null, null],
+        ],
+      },
+      expect: [
+        { cell: "E2", value: 189 },
+        { cell: "E3", value: 12 },
+        { cell: "E4", value: "Not found" },
+      ],
+    },
   },
   {
     slug: "xlookup-basic-example",
@@ -179,6 +210,20 @@ export const lookupFormulas: Formula[] = [
     related: ["vlookup-exact-match", "index-match-lookup", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Employee", "Department", null, "Lookup", "Result"],
+          ["Ana Torres", "Sales", null, "Ben Okafor", '=XLOOKUP(D2,A2:A4,B2:B4,"Not found")'],
+          ["Ben Okafor", "Finance", null, "Dana Cruz", '=XLOOKUP(D3,A2:A4,B2:B4,"Not found")'],
+          ["Cara Lim", "Operations", null, null, null],
+        ],
+      },
+      expect: [
+        { cell: "E2", value: "Finance" },
+        { cell: "E3", value: "Not found" },
+      ],
+    },
   },
   {
     slug: "index-match-lookup",
@@ -231,5 +276,16 @@ export const lookupFormulas: Formula[] = [
     related: ["xlookup-basic-example", "vlookup-exact-match", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Employee ID", "Name", null, "Lookup", "Result"],
+          ["E-104", "Ana Torres", null, "E-221", "=INDEX(B2:B4,MATCH(D2,A2:A4,0))"],
+          ["E-221", "Ben Okafor", null, null, null],
+          ["E-317", "Cara Lim", null, null, null],
+        ],
+      },
+      expect: [{ cell: "E2", value: "Ben Okafor" }],
+    },
   },
 ];

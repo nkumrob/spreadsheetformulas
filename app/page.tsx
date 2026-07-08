@@ -85,7 +85,7 @@ export default function HomePage() {
       <section aria-label="Why trust these formulas" className="border-b border-rule bg-cream/60">
         <div className="mx-auto grid max-w-page gap-6 px-5 py-8 sm:grid-cols-3">
           {[
-            ["Tested, not generated", "Every formula is run against real sample data before publishing."],
+            ["Tested, not generated", "Every formula is executed against real sample data before publishing."],
             ["Plain English", "Each argument explained — no jargon walls, no guesswork."],
             ["Both platforms", "Excel and Google Sheets versions, with the differences called out."],
           ].map(([title, body]) => (
@@ -97,6 +97,11 @@ export default function HomePage() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="mx-auto max-w-page px-5 pb-7">
+          <Link href="/how-we-test" className="text-[13px] font-medium text-ledger-deep hover:underline">
+            Read exactly how we test →
+          </Link>
         </div>
       </section>
 

@@ -70,6 +70,23 @@ export const financeFormulas: Formula[] = [
     related: ["calculate-profit-margin", "calculate-percentage-change", "fix-div0-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Budget", "Actual", "Variance", "Variance %", "Guarded %"],
+          [5000, 6200, "=B2-A2", "=(B2-A2)/A2", '=IF(A2=0,"",(B2-A2)/A2)'],
+          [2000, 2400, "=B3-A3", "=(B3-A3)/A3", null],
+          [0, 500, "=B4-A4", null, '=IF(A4=0,"",(B4-A4)/A4)'],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 1200 },
+        { cell: "D2", value: 0.24 },
+        { cell: "C3", value: 400 },
+        { cell: "D3", value: 0.2 },
+        { cell: "E4", value: "" },
+      ],
+    },
   },
   {
     slug: "calculate-profit-margin",
@@ -135,6 +152,21 @@ export const financeFormulas: Formula[] = [
     related: ["calculate-budget-variance", "calculate-percentage-change", "fix-div0-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Cost", "Revenue", "Margin", "Guarded"],
+          [120, 200, "=(B2-A2)/B2", null],
+          [45, 60, "=(B3-A3)/B3", null],
+          [10, 0, null, '=IF(B4=0,"",(B4-A4)/B4)'],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 0.4 },
+        { cell: "C3", value: 0.25 },
+        { cell: "D4", value: "" },
+      ],
+    },
   },
   {
     slug: "calculate-invoice-due-date",
@@ -202,5 +234,20 @@ export const financeFormulas: Formula[] = [
     related: ["calculate-days-overdue", "flag-overdue-tasks", "calculate-days-remaining"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Invoice", "Invoice Date", "Due Date", "Due Text"],
+          ["INV-1042", "2026-06-01", "=B2+30", '=TEXT(C2,"yyyy-mm-dd")'],
+          ["INV-1043", "2026-07-06", "=B3+30", '=TEXT(C3,"yyyy-mm-dd")'],
+          ["INV-1044", "2026-01-31", "=EDATE(B4,1)", '=TEXT(C4,"yyyy-mm-dd")'],
+        ],
+      },
+      expect: [
+        { cell: "D2", value: "2026-07-01" },
+        { cell: "D3", value: "2026-08-05" },
+        { cell: "D4", value: "2026-02-28" },
+      ],
+    },
   },
 ];

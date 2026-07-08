@@ -56,6 +56,21 @@ export const dateFormulas: Formula[] = [
     related: ["flag-overdue-tasks", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Task", "Due Date", "Days Overdue"],
+          ["Send contract", "2026-06-28", "=MAX(0,TODAY()-B2)"],
+          ["Book venue", "2026-07-15", "=MAX(0,TODAY()-B3)"],
+          ["File permits", "2026-07-01", "=MAX(0,TODAY()-B4)"],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 10 },
+        { cell: "C3", value: 0 },
+        { cell: "C4", value: 7 },
+      ],
+    },
   },
   {
     slug: "flag-overdue-tasks",
@@ -113,6 +128,21 @@ export const dateFormulas: Formula[] = [
     related: ["calculate-days-overdue", "count-if-multiple-conditions", "calculate-completion-percentage"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Task", "Due Date", "Status", "Flag"],
+          ["Send contract", "2026-06-28", "In Progress", '=IF(AND(B2<TODAY(),C2<>"Complete"),"Overdue","On Track")'],
+          ["Book venue", "2026-07-15", "In Progress", '=IF(AND(B3<TODAY(),C3<>"Complete"),"Overdue","On Track")'],
+          ["File permits", "2026-07-01", "Complete", '=IF(AND(B4<TODAY(),C4<>"Complete"),"Overdue","On Track")'],
+        ],
+      },
+      expect: [
+        { cell: "D2", value: "Overdue" },
+        { cell: "D3", value: "On Track" },
+        { cell: "D4", value: "On Track" },
+      ],
+    },
   },
 ];
 
@@ -168,6 +198,21 @@ export const textFormulas: Formula[] = [
     related: ["combine-first-and-last-name", "remove-extra-spaces"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Full Name", "First Name"],
+          ["Ana Torres", '=LEFT(A2,FIND(" ",A2)-1)'],
+          ["Ben Okafor", '=LEFT(A3,FIND(" ",A3)-1)'],
+          ["Cher", '=IFERROR(LEFT(A4,FIND(" ",A4)-1),A4)'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Ana" },
+        { cell: "B3", value: "Ben" },
+        { cell: "B4", value: "Cher" },
+      ],
+    },
   },
   {
     slug: "remove-extra-spaces",
@@ -218,6 +263,19 @@ export const textFormulas: Formula[] = [
     related: ["extract-first-name", "compare-two-columns", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Raw", "Cleaned"],
+          ["  Ana Torres ", "=TRIM(A2)"],
+          ["Ben  Okafor", "=TRIM(A3)"],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Ana Torres" },
+        { cell: "B3", value: "Ben Okafor" },
+      ],
+    },
   },
   {
     slug: "combine-first-and-last-name",
@@ -272,5 +330,18 @@ export const textFormulas: Formula[] = [
     related: ["extract-first-name", "remove-extra-spaces"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["First", "Last", "Full Name"],
+          ["Ana", "Torres", '=A2&" "&B2'],
+          ["Ben", null, '=TEXTJOIN(" ",TRUE,A3,B3)'],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: "Ana Torres" },
+        { cell: "C3", value: "Ben" },
+      ],
+    },
   },
 ];

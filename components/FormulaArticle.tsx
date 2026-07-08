@@ -130,8 +130,16 @@ export function FormulaArticle({ formula }: { formula: Formula }) {
             <FeedbackWidget slug={formula.slug} />
           </div>
 
-          <p className="mt-8 font-mono text-[12px] text-ink-faint">
-            Tested in Excel &amp; Google Sheets · Last reviewed {formula.lastReviewed}
+          <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[12px] text-ink-faint">
+            {formula.verification ? (
+              <span className="inline-flex items-center gap-1.5 rounded border border-ledger/30 bg-ledger-tint/60 px-2 py-0.5 font-medium text-ledger-deep">
+                <span aria-hidden="true">✓</span> Engine-verified against the sample data above
+              </span>
+            ) : (
+              <span>Human-reviewed</span>
+            )}
+            <span aria-hidden="true">·</span>
+            <span>Last reviewed {formula.lastReviewed}</span>
           </p>
         </div>
 

@@ -58,6 +58,29 @@ export const errorFixes2: Formula[] = [
     related: ["fix-na-error", "vlookup-exact-match", "xlookup-basic-example"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["ID", "Fixed", "Typo", "Status", "Quoted"],
+          [
+            "E-104",
+            "=VLOOKUP(A2,Sheet2!A1:B2,2,FALSE)",
+            "=VLOKUP(A2,Sheet2!A1:B2,2,FALSE)",
+            "High",
+            '=IF(D2="High",1,0)',
+          ],
+        ],
+        Sheet2: [
+          ["E-104", "Ana Torres"],
+          ["E-221", "Ben Okafor"],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Ana Torres" },
+        { cell: "C2", value: "#NAME?" },
+        { cell: "E2", value: 1 },
+      ],
+    },
   },
   {
     slug: "fix-spill-error",
@@ -120,6 +143,7 @@ export const errorFixes2: Formula[] = [
     related: ["remove-duplicates", "fix-ref-error", "fix-name-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: null,
   },
   {
     slug: "fix-num-error",
@@ -178,5 +202,20 @@ export const errorFixes2: Formula[] = [
     related: ["fix-value-error", "fix-div0-error", "calculate-days-overdue"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Value", "SQRT", "Guarded"],
+          [-4, "=SQRT(A2)", '=IFERROR(SQRT(A2),"Check input")'],
+          [9, "=SQRT(A3)", '=IFERROR(SQRT(A3),"Check input")'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "#NUM!" },
+        { cell: "C2", value: "Check input" },
+        { cell: "B3", value: 3 },
+        { cell: "C3", value: 3 },
+      ],
+    },
   },
 ];

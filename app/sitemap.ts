@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/fix-formula",
     "/tools/explain-formula",
     "/tools/ai",
+    "/how-we-test",
     ...TEMPLATES.map((t) => `/templates/${t.slug}`),
   ].map((path) => ({
     url: `${SITE_URL}${path}`,

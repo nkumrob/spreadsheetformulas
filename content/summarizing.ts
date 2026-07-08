@@ -62,6 +62,7 @@ export const summarizingFormulas: Formula[] = [
     related: ["find-highest-value-by-category", "calculate-running-total", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: null,
   },
   {
     slug: "calculate-running-total",
@@ -122,6 +123,21 @@ export const summarizingFormulas: Formula[] = [
     related: ["sum-if-multiple-conditions", "summarize-by-month", "rank-values"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Date", "Amount", "Running Total"],
+          ["2026-07-01", 1200, "=SUM($B$2:B2)"],
+          ["2026-07-02", 800, "=SUM($B$2:B3)"],
+          ["2026-07-03", 1500, "=SUM($B$2:B4)"],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 1200 },
+        { cell: "C3", value: 2000 },
+        { cell: "C4", value: 3500 },
+      ],
+    },
   },
   {
     slug: "pull-latest-record",
@@ -184,5 +200,21 @@ export const summarizingFormulas: Formula[] = [
     related: ["xlookup-basic-example", "vlookup-exact-match", "index-match-lookup"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Person", "Status", null, null, "Lookup", "Latest Status"],
+          ["Ana Torres", "Submitted", null, null, "Ana Torres", '=XLOOKUP(E2,A2:A5,B2:B5,"",0,-1)'],
+          ["Ben Okafor", "Submitted", null, null, "Ben Okafor", '=XLOOKUP(E3,A2:A5,B2:B5,"",0,-1)'],
+          ["Ana Torres", "In Review", null, null, "Cara Lim", '=XLOOKUP(E4,A2:A5,B2:B5,"",0,-1)'],
+          ["Ana Torres", "Approved", null, null, null, null],
+        ],
+      },
+      expect: [
+        { cell: "F2", value: "Approved" },
+        { cell: "F3", value: "Submitted" },
+        { cell: "F4", value: "" },
+      ],
+    },
   },
 ];

@@ -42,7 +42,7 @@ export const errorFixes3: Formula[] = [
     ],
     sampleInput: {
       columns: ["Cell", "Formula", "Result"],
-      rows: [["A11", '=SUM(A2:A11)', "#REF!"]],
+      rows: [["A11", '=SUM(A2:A11)', "0 + warning"]],
     },
     sampleOutput: {
       columns: ["Cell", "Formula", "Result"],
@@ -52,6 +52,18 @@ export const errorFixes3: Formula[] = [
     related: ["fix-ref-error", "calculate-running-total", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Amount", null],
+          [1200, null],
+          [800, null],
+          [1500, null],
+          ["Total", "=SUM(A2:A4)"],
+        ],
+      },
+      expect: [{ cell: "B5", value: 3500 }],
+    },
   },
   {
     slug: "fix-formula-parse-error",
@@ -110,6 +122,19 @@ export const errorFixes3: Formula[] = [
     related: ["fix-name-error", "fix-value-error", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Score", "Level"],
+          [14, '=IF(A2>10,"High","Low")'],
+          [7, '=IF(A3>10,"High","Low")'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "High" },
+        { cell: "B3", value: "Low" },
+      ],
+    },
   },
   {
     slug: "vlookup-returns-wrong-value",
@@ -169,5 +194,24 @@ export const errorFixes3: Formula[] = [
     related: ["vlookup-exact-match", "xlookup-basic-example", "index-match-lookup", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["ID", "Correct", "Wrong Column"],
+          ["E-221", "=VLOOKUP(A2,Sheet2!A1:C3,3,FALSE)", "=VLOOKUP(A2,Sheet2!A1:C3,2,FALSE)"],
+        ],
+        Sheet2: [
+          ["E-104", "Sales", "Ana Torres"],
+          ["E-221", "Finance", "Ben Okafor"],
+          ["E-317", "Ops", "Cara Lim"],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Ben Okafor" },
+        // The wrong-column-number mistake silently returns the department —
+        // a plausible-looking wrong value, which is the whole point of the page.
+        { cell: "C2", value: "Finance" },
+      ],
+    },
   },
 ];

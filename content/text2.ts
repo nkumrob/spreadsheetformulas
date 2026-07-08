@@ -56,6 +56,23 @@ export const text2Formulas: Formula[] = [
     related: ["extract-first-name", "combine-first-and-last-name", "remove-extra-spaces"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Full Name", "Last Name"],
+          ["Ana Torres", '=MID(A2,FIND(" ",A2)+1,100)'],
+          ["Ben Okafor", '=MID(A3,FIND(" ",A3)+1,100)'],
+          ["Ana de la Cruz", '=MID(A4,FIND(" ",A4)+1,100)'],
+          ["Cher", '=IFERROR(MID(A5,FIND(" ",A5)+1,100),A5)'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Torres" },
+        { cell: "B3", value: "Okafor" },
+        { cell: "B4", value: "de la Cruz" },
+        { cell: "B5", value: "Cher" },
+      ],
+    },
   },
   {
     slug: "extract-email-domain",
@@ -108,6 +125,23 @@ export const text2Formulas: Formula[] = [
     related: ["extract-last-name", "remove-extra-spaces", "split-text-by-delimiter"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Email", "Domain"],
+          ["ana@acme.com", '=MID(A2,FIND("@",A2)+1,100)'],
+          ["ben@northline.io", '=MID(A3,FIND("@",A3)+1,100)'],
+          ["not-an-email", '=MID(A4,FIND("@",A4)+1,100)'],
+          ["not-an-email", '=IFERROR(MID(A5,FIND("@",A5)+1,100),"")'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "acme.com" },
+        { cell: "B3", value: "northline.io" },
+        { cell: "B4", value: "#VALUE!" },
+        { cell: "B5", value: "" },
+      ],
+    },
   },
   {
     slug: "capitalize-names",
@@ -162,6 +196,25 @@ export const text2Formulas: Formula[] = [
     related: ["remove-extra-spaces", "combine-first-and-last-name", "extract-first-name"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Raw Name", "Fixed"],
+          ["ANA TORRES", "=PROPER(A2)"],
+          ["ben okafor", "=PROPER(A3)"],
+          ["o'brien", "=PROPER(A4)"],
+          ["MCDONALD", "=PROPER(A5)"],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Ana Torres" },
+        { cell: "B3", value: "Ben Okafor" },
+        // Apostrophe counts as a word break, so the B is capitalized — as the page claims.
+        { cell: "B4", value: "O'Brien" },
+        // Internal capitals are lost — the exact pitfall the page warns about.
+        { cell: "B5", value: "Mcdonald" },
+      ],
+    },
   },
   {
     slug: "split-text-by-delimiter",
@@ -218,5 +271,7 @@ export const text2Formulas: Formula[] = [
     related: ["extract-first-name", "extract-email-domain", "remove-extra-spaces"],
     lastReviewed: "2026-07-08",
     published: true,
+    // TEXTSPLIT is not implemented by the HyperFormula engine (engine-gap exemption).
+    verification: null,
   },
 ];

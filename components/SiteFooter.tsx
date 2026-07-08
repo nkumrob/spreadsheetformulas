@@ -43,6 +43,9 @@ export function SiteFooter() {
               <li><Link href="/formulas" className="text-[14px] text-paper/75 hover:text-paper">All formulas</Link></li>
               <li><Link href="/errors" className="text-[14px] text-paper/75 hover:text-paper">Error fixes</Link></li>
               <li><Link href="/categories" className="text-[14px] text-paper/75 hover:text-paper">Categories</Link></li>
+              <li><Link href="/templates" className="text-[14px] text-paper/75 hover:text-paper">Templates</Link></li>
+              <li><Link href="/tools" className="text-[14px] text-paper/75 hover:text-paper">Tools</Link></li>
+              <li><Link href="/how-we-test" className="text-[14px] text-paper/75 hover:text-paper">How we test</Link></li>
               <li><Link href="/search" className="text-[14px] text-paper/75 hover:text-paper">Search</Link></li>
             </ul>
           </nav>

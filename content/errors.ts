@@ -57,6 +57,23 @@ export const errorFixes: Formula[] = [
     related: ["vlookup-exact-match", "xlookup-basic-example", "remove-extra-spaces"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Lookup ID", "Result"],
+          ["E-104", '=IFERROR(VLOOKUP(A2,Sheet2!A1:B2,2,FALSE),"Not found")'],
+          ["E-999", '=IFERROR(VLOOKUP(A3,Sheet2!A1:B2,2,FALSE),"Not found")'],
+        ],
+        Sheet2: [
+          ["E-104", "Ana Torres"],
+          ["E-221", "Ben Okafor"],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Ana Torres" },
+        { cell: "B3", value: "Not found" },
+      ],
+    },
   },
   {
     slug: "fix-value-error",
@@ -114,6 +131,21 @@ export const errorFixes: Formula[] = [
     related: ["fix-na-error", "remove-extra-spaces", "calculate-days-overdue"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Qty", "IsNumber", "Fixed"],
+          [3, "=ISNUMBER(A2)", null],
+          ["x2", "=ISNUMBER(A3)", null],
+          ["42", "=ISNUMBER(A4)", "=VALUE(A4)*2"],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: true },
+        { cell: "B3", value: false },
+        { cell: "C4", value: 84 },
+      ],
+    },
   },
   {
     slug: "fix-ref-error",
@@ -166,6 +198,19 @@ export const errorFixes: Formula[] = [
     related: ["index-match-lookup", "xlookup-basic-example", "fix-na-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["ID", "Name"],
+          ["E-221", "=INDEX(Data!C1:C2,MATCH(A2,Data!A1:A2,0))"],
+        ],
+        Data: [
+          ["E-104", "Sales", "Ana Torres"],
+          ["E-221", "Finance", "Ben Okafor"],
+        ],
+      },
+      expect: [{ cell: "B2", value: "Ben Okafor" }],
+    },
   },
   {
     slug: "fix-div0-error",
@@ -220,5 +265,20 @@ export const errorFixes: Formula[] = [
     related: ["calculate-completion-percentage", "fix-value-error"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Revenue", "Units", "Guarded", "Naive"],
+          [2800, 140, '=IF(B2=0,"",A2/B2)', "=A2/B2"],
+          [1600, 0, '=IF(B3=0,"",A3/B3)', "=A3/B3"],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 20 },
+        { cell: "D2", value: 20 },
+        { cell: "C3", value: "" },
+        { cell: "D3", value: "#DIV/0!" },
+      ],
+    },
   },
 ];

@@ -63,6 +63,31 @@ export const duplicatesBlanksFormulas: Formula[] = [
     related: ["compare-two-columns", "count-duplicates", "vlookup-exact-match"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Invited (A)", "Registered (B)", "Result"],
+          ["Ana Torres", "Ana Torres", '=IF(COUNTIF(B2:B5,A2)=0,"Missing","In list")'],
+          ["Ben Okafor", "Cara Lim", '=IF(COUNTIF(B2:B5,A3)=0,"Missing","In list")'],
+          ["Cara Lim", "Eli Ford", '=IF(COUNTIF(B2:B5,A4)=0,"Missing","In list")'],
+          ["Dana Cruz", "Dana Cruz", '=IF(COUNTIF(B2:B5,A5)=0,"Missing","In list")'],
+          [
+            "Cara Lim ",
+            null,
+            '=IF(COUNTIF(B2:B5,A6)=0,"Missing","In list")',
+            '=IF(COUNTIF(B2:B5,TRIM(A6))=0,"Missing","In list")',
+          ],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: "In list" },
+        { cell: "C3", value: "Missing" },
+        { cell: "C5", value: "In list" },
+        // Trailing space hides the match (documented mistake); TRIM fixes it.
+        { cell: "C6", value: "Missing" },
+        { cell: "D6", value: "In list" },
+      ],
+    },
   },
   {
     slug: "remove-duplicates",
@@ -118,6 +143,8 @@ export const duplicatesBlanksFormulas: Formula[] = [
     related: ["count-duplicates", "highlight-duplicates", "remove-extra-spaces"],
     lastReviewed: "2026-07-08",
     published: true,
+    // UNIQUE is not implemented by the HyperFormula verification engine.
+    verification: null,
   },
   {
     slug: "count-duplicates",
@@ -181,6 +208,27 @@ export const duplicatesBlanksFormulas: Formula[] = [
     related: ["remove-duplicates", "highlight-duplicates", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Email", "Count", "Repeats Only"],
+          ["ana@co.com", "=COUNTIF($A$2:$A$6,A2)", '=IF(COUNTIF($A$2:A2,A2)>1,"Duplicate","")'],
+          ["ben@co.com", "=COUNTIF($A$2:$A$6,A3)", '=IF(COUNTIF($A$2:A3,A3)>1,"Duplicate","")'],
+          ["ana@co.com", "=COUNTIF($A$2:$A$6,A4)", '=IF(COUNTIF($A$2:A4,A4)>1,"Duplicate","")'],
+          ["cara@co.com", "=COUNTIF($A$2:$A$6,A5)", '=IF(COUNTIF($A$2:A5,A5)>1,"Duplicate","")'],
+          ["ana@co.com", "=COUNTIF($A$2:$A$6,A6)", '=IF(COUNTIF($A$2:A6,A6)>1,"Duplicate","")'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: 3 },
+        { cell: "B3", value: 1 },
+        { cell: "B6", value: 3 },
+        // Expanding range flags only the repeats — first copy stays clean.
+        { cell: "C2", value: "" },
+        { cell: "C4", value: "Duplicate" },
+        { cell: "C6", value: "Duplicate" },
+      ],
+    },
   },
   {
     slug: "count-if-status-complete",
@@ -241,5 +289,23 @@ export const duplicatesBlanksFormulas: Formula[] = [
     related: ["count-if-multiple-conditions", "calculate-completion-percentage", "sum-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Task", "Owner", "Status", null, "Count"],
+          ["Send invoices", "Ana Torres", "Complete", null, '=COUNTIF(C2:C6,"Complete")'],
+          ["Update roster", "Ben Okafor", "In Progress", null, '=COUNTIF(C2:C6,"Complet*")'],
+          ["Q3 budget", "Cara Lim", "Complete"],
+          ["File report", "Dana Cruz", "Not Started"],
+          ["Archive files", "Eli Ford", "Completed"],
+        ],
+      },
+      expect: [
+        // "Completed" is not counted — the whole cell must match (documented mistake).
+        { cell: "E2", value: 2 },
+        // Wildcard variant catches "Completed" too.
+        { cell: "E3", value: 3 },
+      ],
+    },
   },
 ];
