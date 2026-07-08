@@ -33,6 +33,14 @@ const TOOLS = [
     live: true,
   },
   {
+    href: "/tools/convert-formula",
+    mark: "=CONVERT()",
+    name: "Excel ↔ Sheets Converter",
+    blurb:
+      "Moving between platforms? Get the equivalent formula — direct renames, structural rewrites, version warnings, and honest dead-ends instead of guesses.",
+    live: true,
+  },
+  {
     href: "/tools/ai",
     mark: "=AI()",
     name: "AI Formula Generator",

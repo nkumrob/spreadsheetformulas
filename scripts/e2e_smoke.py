@@ -96,7 +96,16 @@ with sync_playwright() as p:
         page.locator('section[aria-label="Findings"] button:has-text("A10")').count() == 1,
     )
 
-    # 8. Error page + 404.
+    # 8. Converter: TEXTSPLIT becomes SPLIT.
+    page.goto(f"{BASE}/tools/convert-formula")
+    page.wait_for_load_state("networkidle")
+    page.fill("textarea", '=TEXTSPLIT(A2,",")')
+    page.get_by_role("button", name="Convert", exact=True).click()
+    page.wait_for_timeout(300)
+    converted = page.locator("code", has_text="=SPLIT(A2,").count()
+    check("converter renames TEXTSPLIT", converted >= 1)
+
+    # 9. Error page + 404.
     page.goto(f"{BASE}/errors/fix-spill-error")
     page.wait_for_load_state("networkidle")
     check("new error page renders", "#SPILL!" in page.content())
