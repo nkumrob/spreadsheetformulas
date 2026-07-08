@@ -40,8 +40,15 @@ export default function WorkbookEditor({
   workbook: ParsedWorkbook;
   initialFindings: WorkbookFinding[];
 }) {
-  const session = useMemo(() => WorkbookSession.open(workbook), [workbook]);
-  useEffect(() => () => session.destroy(), [session]);
+  // Create + destroy are paired inside one effect so React StrictMode's
+  // dev double-mount gets its own fresh engine each time (a memoized
+  // session destroyed by the first unmount crashed the second mount).
+  const [session, setSession] = useState<WorkbookSession | null>(null);
+  useEffect(() => {
+    const next = WorkbookSession.open(workbook);
+    setSession(next);
+    return () => next.destroy();
+  }, [workbook]);
 
   const [sheet, setSheet] = useState(workbook.sheets[0].name);
   const [selection, setSelection] = useState<Selection>({ r: 0, c: 0 });
@@ -53,23 +60,39 @@ export default function WorkbookEditor({
 
   // Formula bar mirrors the selected cell unless the user is typing in it.
   useEffect(() => {
-    if (!barFocused.current) setBarDraft(session.cellContent(sheet, selection.r, selection.c));
+    if (session && !barFocused.current) {
+      setBarDraft(session.cellContent(sheet, selection.r, selection.c));
+    }
   }, [session, sheet, selection, version]);
 
+  const sheetFindings = findings.filter((f) => f.sheet === sheet);
+  const findingCells = useMemo(() => {
+    const map = new Map<string, FindingKind>();
+    for (const finding of sheetFindings) {
+      const address = decodeAddress(finding.cell);
+      if (address) map.set(`${address.r}:${address.c}`, finding.kind);
+    }
+    return map;
+  }, [sheetFindings]);
+
+  if (!session) {
+    return <p className="mt-10 font-mono text-[13px] text-ink-faint">Opening workbook…</p>;
+  }
+
   function commit(target: Selection, input: string) {
-    session.setCell(sheet, target.r, target.c, input);
+    session!.setCell(sheet, target.r, target.c, input);
     setVersion((v) => v + 1);
     setEdited(true);
   }
 
   function rescan() {
-    const report = analyzeWorkbook(session.snapshot());
+    const report = analyzeWorkbook(session!.snapshot());
     setFindings(report.findings);
     track("tool_use", { tool: "workbook-rescan", findings: String(report.findings.length) });
   }
 
   function download() {
-    const bytes = exportWorkbook(session.snapshot());
+    const bytes = exportWorkbook(session!.snapshot());
     const blob = new Blob([bytes as BlobPart], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
@@ -81,16 +104,6 @@ export default function WorkbookEditor({
     URL.revokeObjectURL(url);
     track("tool_use", { tool: "workbook-download" });
   }
-
-  const sheetFindings = findings.filter((f) => f.sheet === sheet);
-  const findingCells = useMemo(() => {
-    const map = new Map<string, FindingKind>();
-    for (const finding of sheetFindings) {
-      const address = decodeAddress(finding.cell);
-      if (address) map.set(`${address.r}:${address.c}`, finding.kind);
-    }
-    return map;
-  }, [sheetFindings]);
 
   const barChecks = barDraft.trim().startsWith("=") ? checkFormula(barDraft).slice(0, 2) : [];
 

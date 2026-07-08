@@ -33,12 +33,20 @@ function trimNumber(value: number): string {
 }
 
 export class WorkbookSession {
+  private destroyed = false;
+
   private constructor(
     private hf: HyperFormula,
     private names: string[],
     private formats: Map<string, string>,
     private baseDims: Map<string, { rows: number; cols: number }>,
   ) {}
+
+  private assertAlive(): void {
+    if (this.destroyed) {
+      throw new Error("WorkbookSession used after destroy() — open a new session instead.");
+    }
+  }
 
   static open(workbook: ParsedWorkbook): WorkbookSession {
     const sheets = Object.fromEntries(
@@ -76,6 +84,7 @@ export class WorkbookSession {
   }
 
   private sheetId(sheet: string): number {
+    this.assertAlive();
     return this.hf.getSheetId(sheet)!;
   }
 
@@ -152,6 +161,8 @@ export class WorkbookSession {
   }
 
   destroy(): void {
+    if (this.destroyed) return;
+    this.destroyed = true;
     this.hf.destroy();
   }
 }
