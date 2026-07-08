@@ -97,7 +97,7 @@ export const dateFormulas: Formula[] = [
       { part: '"Overdue","On Track"', meaning: "What to show when overdue, and what to show otherwise." },
     ],
     whenToUse:
-      "Use this as the status engine in project trackers, training compliance sheets, and invoice logs — then point conditional formatting or COUNTIF at the flag column.",
+      "Use this as the status engine in project trackers, client deliverable sheets, and invoice logs — then point conditional formatting or COUNTIF at the flag column.",
     commonMistakes: [
       {
         mistake: "Blank due dates get flagged as overdue.",

@@ -5,7 +5,7 @@ import { TEMPLATES } from "@/lib/templates";
 export const metadata: Metadata = {
   title: "Free Spreadsheet Templates",
   description:
-    "Free Excel and Google Sheets templates with working formulas built in: training compliance, budgets, invoices, project tasks, and job applications.",
+    "Free Excel and Google Sheets templates with working formulas built in: sales pipelines, budgets, invoices, project tasks, and job applications.",
 };
 
 export default function TemplatesPage() {

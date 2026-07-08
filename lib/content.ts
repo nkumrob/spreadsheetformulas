@@ -11,8 +11,7 @@ import { text2Formulas } from "@/content/text2";
 import { logicFormulas } from "@/content/logic";
 import { financeFormulas } from "@/content/finance";
 import { businessFormulas } from "@/content/business";
-import { hrFormulas } from "@/content/hr";
-import { hr2Formulas } from "@/content/hr2";
+import { businessMetricsFormulas } from "@/content/business-metrics";
 import { errorFixes2 } from "@/content/errors2";
 import { errorFixes3 } from "@/content/errors3";
 
@@ -29,8 +28,7 @@ const raw: Formula[] = [
   ...logicFormulas,
   ...financeFormulas,
   ...businessFormulas,
-  ...hrFormulas,
-  ...hr2Formulas,
+  ...businessMetricsFormulas,
   ...errorFixes,
   ...errorFixes2,
   ...errorFixes3,

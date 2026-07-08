@@ -45,32 +45,32 @@ def summary_block(ws, start_row, entries):
             value_cell.number_format = fmt
 
 
-def training_compliance():
+def sales_pipeline():
     wb = Workbook()
     ws = wb.active
-    ws.title = "Training Tracker"
-    headers = ["Employee", "Department", "Manager", "Module", "Due Date", "Status", "Flag"]
-    style_sheet(ws, headers, [18, 14, 16, 18, 12, 13, 12], 20)
+    ws.title = "Pipeline"
+    headers = ["Deal", "Company", "Stage", "Value", "Probability", "Weighted Value"]
+    style_sheet(ws, headers, [22, 16, 12, 12, 12, 14], 20)
     rows = [
-        ("Ana Torres", "Sales", "Dana Cruz", "Safety 101", "2026-06-20", "Complete"),
-        ("Ben Okafor", "Sales", "Dana Cruz", "Safety 101", "2026-06-20", "In Progress"),
-        ("Cara Lim", "Finance", "Eli Ford", "Safety 101", "2026-07-15", "Not Started"),
-        ("Rosa Ibarra", "Ops", "Eli Ford", "Data Privacy", "2026-06-30", "In Progress"),
-        ("Leo Park", "Finance", "Eli Ford", "Data Privacy", "2026-08-01", "Not Started"),
+        ("Website rebuild", "Acme Co", "Proposal", 12000, 0.6),
+        ("Annual retainer", "Borealis LLC", "Qualified", 30000, 0.35),
+        ("Brand refresh", "Cobalt Studio", "Lead", 8000, 0.15),
+        ("Support contract", "Delta Corp", "Won", 15000, 1.0),
+        ("Audit project", "Ember Inc", "Lost", 9000, 0.0),
     ]
-    for r, row in enumerate(rows, start=2):
-        for c, value in enumerate(row, start=1):
-            if c == 5:
-                cell = ws.cell(row=r, column=c, value=date.fromisoformat(value))
-                cell.number_format = "yyyy-mm-dd"
-            else:
-                ws.cell(row=r, column=c, value=value)
-        ws.cell(row=r, column=7, value=f'=IF(AND(E{r}<TODAY(),F{r}<>"Complete"),"Overdue","On Track")')
-    summary_block(ws, 9, [
-        ("Completion rate", "=COUNTIF(F2:F6,\"Complete\")/COUNTA(F2:F6)", "0%"),
-        ("Overdue count", "=COUNTIF(G2:G6,\"Overdue\")", None),
+    for r, (deal, company, stage, value, prob) in enumerate(rows, start=2):
+        ws.cell(row=r, column=1, value=deal)
+        ws.cell(row=r, column=2, value=company)
+        ws.cell(row=r, column=3, value=stage)
+        ws.cell(row=r, column=4, value=value).number_format = "#,##0"
+        ws.cell(row=r, column=5, value=prob).number_format = "0%"
+        ws.cell(row=r, column=6, value=f"=D{r}*E{r}").number_format = "#,##0"
+    summary_block(ws, 8, [
+        ("Open pipeline", '=SUMIFS(D2:D6,C2:C6,"<>Won",C2:C6,"<>Lost")', "#,##0"),
+        ("Weighted pipeline", "=SUM(F2:F6)", "#,##0"),
+        ("Won this period", '=SUMIF(C2:C6,"Won",D2:D6)', "#,##0"),
     ])
-    wb.save(OUT / "training-compliance-tracker.xlsx")
+    wb.save(OUT / "sales-pipeline-tracker.xlsx")
 
 
 def budget_tracker():
@@ -177,7 +177,7 @@ def job_application_tracker():
 
 
 if __name__ == "__main__":
-    training_compliance()
+    sales_pipeline()
     budget_tracker()
     invoice_tracker()
     project_task_tracker()

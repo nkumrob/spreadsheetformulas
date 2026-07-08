@@ -13,7 +13,7 @@ export const countingFormulas: Formula[] = [
     functions: ["COUNTIFS"],
     keywords: ["countifs", "count with conditions", "count overdue by department", "multiple criteria"],
     problem:
-      "You need a count that depends on more than one thing at once — how many tasks are both assigned to Sales and overdue, or how many employees in one location finished training.",
+      "You need a count that depends on more than one thing at once — how many tasks are both assigned to Sales and overdue, or how many orders from one region shipped late.",
     quickFormula: '=COUNTIFS(A2:A20,"Sales",C2:C20,"Overdue")',
     excelFormula: '=COUNTIFS(A2:A20,"Sales",C2:C20,"Overdue")',
     sheetsFormula: null,
@@ -144,19 +144,19 @@ export const countingFormulas: Formula[] = [
     title: "Calculate a Completion Percentage",
     seoTitle: "Completion Percentage Formula (Excel & Sheets)",
     description:
-      "Divide completed items by total items with COUNTIF and COUNTA to get a live completion rate for tasks, training, or projects.",
+      "Divide completed items by total items with COUNTIF and COUNTA to get a live completion rate for tasks, orders, or projects.",
     category: "counting-summarizing",
     difficulty: "beginner",
     functions: ["COUNTIF", "COUNTA"],
     keywords: [
       "completion percentage",
       "percent complete",
-      "training completion",
+      "task completion",
       "progress tracker",
       "compliance rate",
     ],
     problem:
-      "You have a status column and need one number at the top of the sheet: what percentage of tasks, people, or training modules are complete?",
+      "You have a status column and need one number at the top of the sheet: what percentage of tasks, orders, or deliverables are complete?",
     quickFormula: '=COUNTIF(C2:C11,"Complete")/COUNTA(C2:C11)',
     excelFormula: '=COUNTIF(C2:C11,"Complete")/COUNTA(C2:C11)',
     sheetsFormula: null,
@@ -168,7 +168,7 @@ export const countingFormulas: Formula[] = [
       { part: "/", meaning: "Divides completed by total. Format the result as a percentage." },
     ],
     whenToUse:
-      "Use this for any progress metric: training compliance, project task completion, survey response rates, onboarding checklists.",
+      "Use this for any progress metric: project task completion, order fulfillment, survey response rates, migration checklists.",
     commonMistakes: [
       {
         mistake: "Using COUNTA over a whole column that includes the header.",
@@ -184,13 +184,13 @@ export const countingFormulas: Formula[] = [
       },
     ],
     sampleInput: {
-      columns: ["Employee", "Module", "Status"],
+      columns: ["Task", "Owner", "Status"],
       rows: [
-        ["Ana Torres", "Safety 101", "Complete"],
-        ["Ben Okafor", "Safety 101", "In Progress"],
-        ["Cara Lim", "Safety 101", "Complete"],
-        ["Dana Cruz", "Safety 101", "Complete"],
-        ["Eli Ford", "Safety 101", "Not Started"],
+        ["Send contract", "Ana Torres", "Complete"],
+        ["Book venue", "Ben Okafor", "In Progress"],
+        ["File permits", "Cara Lim", "Complete"],
+        ["Draft agenda", "Dana Cruz", "Complete"],
+        ["Order badges", "Eli Ford", "Not Started"],
       ],
     },
     sampleOutput: {

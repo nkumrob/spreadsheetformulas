@@ -28,7 +28,7 @@ describe("search relevance (PRD §11 queries)", () => {
   });
 
   it("finds pages by use case", () => {
-    expect(topSlugs("training completion percentage")).toContain("calculate-completion-percentage");
+    expect(topSlugs("completion percentage")).toContain("calculate-completion-percentage");
     expect(topSlugs("overdue tasks")).toContain("flag-overdue-tasks");
   });
 

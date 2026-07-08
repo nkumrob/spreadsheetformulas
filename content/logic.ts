@@ -25,7 +25,7 @@ export const logicFormulas: Formula[] = [
       { part: '"Fail"', meaning: "What to show when the test is false." },
     ],
     whenToUse:
-      "Use this for training scores, quality checks, sales quotas, attendance thresholds — any place a number needs to become a plain yes/no verdict people can scan, filter, and count.",
+      "Use this for quality checks, sales quotas, exam results, credit thresholds — any place a number needs to become a plain yes/no verdict people can scan, filter, and count.",
     commonMistakes: [
       {
         mistake: "Scores exactly at the cutoff fail.",

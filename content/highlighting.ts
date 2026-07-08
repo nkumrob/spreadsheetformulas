@@ -270,7 +270,7 @@ export const highlightingFormulas: Formula[] = [
       { part: "AND(…)", meaning: "Both conditions must be TRUE: past due and still open." },
     ],
     whenToUse:
-      "Use this on any tracker with deadlines: project tasks, invoices awaiting payment, contract renewals, training due dates. It turns the sheet into a self-updating early-warning system.",
+      "Use this on any tracker with deadlines: project tasks, invoices awaiting payment, contract renewals, license expirations. It turns the sheet into a self-updating early-warning system.",
     commonMistakes: [
       {
         mistake: "Forgetting the $ before the column letters.",

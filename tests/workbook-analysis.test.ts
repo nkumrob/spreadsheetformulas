@@ -23,13 +23,13 @@ function loadTemplate(name: string): ParsedWorkbook {
 
 describe("parseWorkbook — real .xlsx files", () => {
   it("extracts values and formulas from our own templates", () => {
-    const wb = loadTemplate("training-compliance-tracker.xlsx");
+    const wb = loadTemplate("project-task-tracker.xlsx");
     expect(wb.sheets).toHaveLength(1);
     const sheet = wb.sheets[0];
-    expect(sheet.name).toBe("Training Tracker");
-    expect(sheet.values[1][0]).toBe("Ana Torres");
-    // Row 2 (index 1), column G (index 6) holds the overdue flag formula, "=" prefixed.
-    expect(sheet.formulas[1][6]).toBe('=IF(AND(E2<TODAY(),F2<>"Complete"),"Overdue","On Track")');
+    expect(sheet.name).toBe("Tasks");
+    expect(sheet.values[1][0]).toBe("Send contract");
+    // Row 2 (index 1), column F (index 5) holds the overdue flag formula, "=" prefixed.
+    expect(sheet.formulas[1][5]).toBe('=IF(AND(D2<TODAY(),E2<>"Complete"),"Overdue","On Track")');
   });
 });
 

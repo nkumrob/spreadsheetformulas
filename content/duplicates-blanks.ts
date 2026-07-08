@@ -253,7 +253,7 @@ export const duplicatesBlanksFormulas: Formula[] = [
       { part: '"Complete"', meaning: "The exact text to count. Not case-sensitive, but the whole cell must match." },
     ],
     whenToUse:
-      "Use this for the summary section of any tracker: tasks completed, tickets closed, employees who finished training, invoices marked Paid. Pair it with a total count to compute a completion percentage.",
+      "Use this for the summary section of any tracker: tasks completed, tickets closed, orders shipped, invoices marked Paid. Pair it with a total count to compute a completion percentage.",
     commonMistakes: [
       {
         mistake: "The count is lower than expected because of inconsistent status text.",

@@ -67,9 +67,9 @@ pull-latest-record, extract-last-name, extract-email-domain, capitalize-names,
 split-text-by-delimiter, create-pass-fail-status, create-status-multiple-conditions,
 find-highest-value-by-category, find-lowest-value-by-category, calculate-budget-variance,
 calculate-profit-margin, calculate-invoice-due-date, calculate-inventory-reorder-status,
-calculate-sales-commission, track-job-applications, count-training-completed-by-department,
-count-overdue-training-by-manager, build-skills-matrix-formula, calculate-attendance-percentage,
-calculate-average-score-by-group, fix-name-error, fix-spill-error, fix-num-error,
+calculate-sales-commission, track-job-applications, calculate-percentage-of-total,
+calculate-weighted-average, calculate-years-between-dates, average-by-category,
+count-unique-values, fix-name-error, fix-spill-error, fix-num-error,
 fix-circular-reference, fix-formula-parse-error, vlookup-returns-wrong-value
 
 ## Error-fix pages (kind: "error-fix", category: "error-fixes")

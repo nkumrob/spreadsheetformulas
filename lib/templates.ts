@@ -13,27 +13,27 @@ export type Template = {
 
 export const TEMPLATES: Template[] = [
   {
-    slug: "training-compliance-tracker",
-    name: "Training Compliance Tracker",
-    file: "/templates/training-compliance-tracker.xlsx",
+    slug: "sales-pipeline-tracker",
+    name: "Sales Pipeline Tracker",
+    file: "/templates/sales-pipeline-tracker.xlsx",
     description:
-      "Track who has completed required training, who's overdue, and your team's completion rate — with status flags that update themselves daily.",
-    whoFor: "HR, L&D, and operations teams tracking mandatory training across a team or company.",
+      "Track every deal by stage with probability-weighted values, open-pipeline and won totals — the whole funnel on one sheet.",
+    whoFor: "Founders, sales teams, and freelancers who need a clear view of what's likely to close.",
     includedFormulas: [
-      { formula: '=IF(AND(E2<TODAY(),F2<>"Complete"),"Overdue","On Track")', does: "Flags overdue training automatically" },
-      { formula: '=COUNTIF(F2:F6,"Complete")/COUNTA(F2:F6)', does: "Live completion rate" },
-      { formula: '=COUNTIF(G2:G6,"Overdue")', does: "Overdue count for reporting" },
+      { formula: "=D2*E2", does: "Probability-weighted deal value" },
+      { formula: '=SUMIFS(D2:D6,C2:C6,"<>Won",C2:C6,"<>Lost")', does: "Open pipeline total" },
+      { formula: '=SUMIF(C2:C6,"Won",D2:D6)', does: "Revenue won this period" },
     ],
     preview: {
-      columns: ["Employee", "Module", "Due Date", "Status", "Flag"],
+      columns: ["Deal", "Stage", "Value", "Probability", "Weighted"],
       rows: [
-        ["Ana Torres", "Safety 101", "2026-06-20", "Complete", "On Track"],
-        ["Ben Okafor", "Safety 101", "2026-06-20", "In Progress", "Overdue"],
-        ["Cara Lim", "Safety 101", "2026-07-15", "Not Started", "On Track"],
+        ["Website rebuild", "Proposal", "12000", "60%", "7200"],
+        ["Annual retainer", "Qualified", "30000", "35%", "10500"],
+        ["Support contract", "Won", "15000", "100%", "15000"],
       ],
       highlightColumn: 4,
     },
-    relatedFormulaSlugs: ["flag-overdue-tasks", "calculate-completion-percentage", "count-training-completed-by-department"],
+    relatedFormulaSlugs: ["sum-if-multiple-conditions", "calculate-percentage-of-total", "calculate-weighted-average"],
   },
   {
     slug: "budget-tracker",

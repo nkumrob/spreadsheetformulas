@@ -55,7 +55,7 @@ export const financeFormulas: Formula[] = [
       rows: [
         ["Travel", "5000", "6200"],
         ["Software", "3000", "2750"],
-        ["Training", "2000", "2400"],
+        ["Contractors", "2000", "2400"],
       ],
     },
     sampleOutput: {
@@ -63,7 +63,7 @@ export const financeFormulas: Formula[] = [
       rows: [
         ["Travel", "1200", "24%"],
         ["Software", "-250", "-8%"],
-        ["Training", "400", "20%"],
+        ["Contractors", "400", "20%"],
       ],
       highlightColumn: 1,
     },

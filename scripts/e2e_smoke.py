@@ -61,10 +61,10 @@ with sync_playwright() as p:
     check("explainer identifies IFERROR", "IFERROR" in page.content() and "Piece by piece" in page.content())
 
     # 6. Template page renders and the .xlsx download is reachable.
-    page.goto(f"{BASE}/templates/training-compliance-tracker")
+    page.goto(f"{BASE}/templates/project-task-tracker")
     page.wait_for_load_state("networkidle")
     check("template page formulas listed", "Formulas built in" in page.content())
-    request = urllib.request.Request(f"{BASE}/templates/training-compliance-tracker.xlsx", method="HEAD")
+    request = urllib.request.Request(f"{BASE}/templates/project-task-tracker.xlsx", method="HEAD")
     with urllib.request.urlopen(request) as response:
         check("xlsx download 200", response.status == 200)
 

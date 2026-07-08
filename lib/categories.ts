@@ -47,7 +47,7 @@ export const CATEGORIES: Category[] = [
     slug: "hr-training",
     name: "HR & Training",
     cell: "G7",
-    blurb: "Compliance trackers, completion rates, and skills matrices.",
+    blurb: "Tenure, headcount, time off, and people data.",
   },
   {
     slug: "finance-business",
