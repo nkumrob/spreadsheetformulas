@@ -1,6 +1,49 @@
 import { HyperFormula, DetailedCellError } from "hyperformula";
-import { analyzeWorkbook, type CellValue, type ParsedWorkbook, type WorkbookFinding } from "./workbook-analysis";
+import {
+  analyzeWorkbook,
+  formulaSignature,
+  type CellValue,
+  type ParsedWorkbook,
+  type WorkbookFinding,
+} from "./workbook-analysis";
 import { ENGINE_MISSING, extractFunctions } from "./formula-check";
+
+/** Finding kinds applyFixes knows how to repair deterministically. */
+export const FIXABLE_KINDS = new Set(["number-as-text", "extra-spaces", "inconsistent-formula"]);
+
+function decodeA1(cell: string): { r: number; c: number } | null {
+  const match = /^([A-Z]+)([0-9]+)$/.exec(cell);
+  if (!match) return null;
+  let c = 0;
+  for (const ch of match[1]) c = c * 26 + (ch.charCodeAt(0) - 64);
+  return { r: Number(match[2]) - 1, c: c - 1 };
+}
+
+/** Shift relative row references in a formula by delta rows ($-anchored rows stay). */
+function shiftFormulaRows(formula: string, delta: number): string {
+  let out = "";
+  let inQuotes = false;
+  let i = 0;
+  const pattern = /^(\$?)([A-Z]{1,3})(\$?)(\d+)(?![\dA-Z(])/;
+  while (i < formula.length) {
+    const char = formula[i];
+    if (char === '"') inQuotes = !inQuotes;
+    if (!inQuotes) {
+      const match = pattern.exec(formula.slice(i));
+      // Don't match mid-identifier (e.g. the "G10" in LOG10).
+      const prev = i > 0 ? formula[i - 1] : "";
+      if (match && !/[A-Z0-9_$]/.test(prev)) {
+        const [whole, colAbs, col, rowAbs, row] = match;
+        out += `${colAbs}${col}${rowAbs}${rowAbs ? row : Number(row) + delta}`;
+        i += whole.length;
+        continue;
+      }
+    }
+    out += char;
+    i += 1;
+  }
+  return out;
+}
 
 /**
  * A live, editable workbook: HyperFormula holds the state, edits recompute
@@ -232,6 +275,86 @@ export class WorkbookSession {
         return { name, values, formulas, formats };
       }),
     };
+  }
+
+  /**
+   * Apply deterministic repairs for fixable findings: convert text numbers,
+   * clean stray spaces, and rewrite pattern-breaking formulas to match their
+   * column's dominant shape (row-shifted). Everything else is skipped.
+   */
+  applyFixes(findings: WorkbookFinding[]): { applied: number; skipped: number } {
+    this.assertAlive();
+    let applied = 0;
+    let skipped = 0;
+
+    for (const finding of findings) {
+      const target = decodeA1(finding.cell);
+      if (!target || !FIXABLE_KINDS.has(finding.kind)) {
+        skipped += 1;
+        continue;
+      }
+      const sheetId = this.hf.getSheetId(finding.sheet);
+      if (sheetId === undefined) {
+        skipped += 1;
+        continue;
+      }
+      const address = { sheet: sheetId, row: target.r, col: target.c };
+
+      if (finding.kind === "number-as-text") {
+        const value = this.hf.getCellValue(address);
+        const numeric = Number(String(value).trim());
+        if (typeof value === "string" && Number.isFinite(numeric)) {
+          this.hf.setCellContents(address, [[numeric]]);
+          applied += 1;
+        } else skipped += 1;
+      } else if (finding.kind === "extra-spaces") {
+        const value = this.hf.getCellValue(address);
+        if (typeof value === "string") {
+          this.hf.setCellContents(address, [[value.trim().replace(/\s{2,}/g, " ")]]);
+          applied += 1;
+        } else skipped += 1;
+      } else {
+        // inconsistent-formula: rewrite to the column's dominant pattern.
+        const donor = this.findDominantDonor(finding.sheet, sheetId, target.c, target.r);
+        if (donor) {
+          this.hf.setCellContents(address, [[shiftFormulaRows(donor.formula, target.r - donor.row)]]);
+          applied += 1;
+        } else skipped += 1;
+      }
+    }
+    return { applied, skipped };
+  }
+
+  /** The nearest cell in the column whose formula matches the dominant signature. */
+  private findDominantDonor(
+    sheet: string,
+    sheetId: number,
+    col: number,
+    excludeRow: number,
+  ): { row: number; formula: string } | null {
+    const { rows } = this.baseDims.get(sheet) ?? { rows: this.hf.getSheetDimensions(sheetId).height };
+    const entries: { row: number; formula: string; signature: string }[] = [];
+    for (let r = 0; r < rows; r++) {
+      if (r === excludeRow) continue;
+      const formula = this.hf.getCellFormula({ sheet: sheetId, row: r, col });
+      if (formula) entries.push({ row: r, formula, signature: formulaSignature(formula) });
+    }
+    if (entries.length === 0) return null;
+    const counts = new Map<string, number>();
+    for (const entry of entries) counts.set(entry.signature, (counts.get(entry.signature) ?? 0) + 1);
+    const dominant = [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    const donor = entries
+      .filter((e) => e.signature === dominant)
+      .sort((a, b) => Math.abs(a.row - excludeRow) - Math.abs(b.row - excludeRow))[0];
+    return { row: donor.row, formula: donor.formula };
+  }
+
+  /** Undo the last N operations (used to roll back a cleanup batch). */
+  undo(steps: number): void {
+    this.assertAlive();
+    for (let i = 0; i < steps && this.hf.isThereSomethingToUndo(); i++) {
+      this.hf.undo();
+    }
   }
 
   destroy(): void {

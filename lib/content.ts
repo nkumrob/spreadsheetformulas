@@ -12,6 +12,7 @@ import { logicFormulas } from "@/content/logic";
 import { financeFormulas } from "@/content/finance";
 import { businessFormulas } from "@/content/business";
 import { businessMetricsFormulas } from "@/content/business-metrics";
+import { googleSheetsFormulas } from "@/content/google-sheets";
 import { errorFixes2 } from "@/content/errors2";
 import { errorFixes3 } from "@/content/errors3";
 
@@ -29,6 +30,7 @@ const raw: Formula[] = [
   ...financeFormulas,
   ...businessFormulas,
   ...businessMetricsFormulas,
+  ...googleSheetsFormulas,
   ...errorFixes,
   ...errorFixes2,
   ...errorFixes3,

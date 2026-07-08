@@ -108,7 +108,7 @@ export function parseWorkbook(data: ArrayBuffer | Uint8Array): ParsedWorkbook {
 const NUMBER_AS_TEXT = /^\s*-?\d+(\.\d+)?\s*$/;
 
 /** Strip row numbers from references so copies of one formula share a signature. */
-function formulaSignature(formula: string): string {
+export function formulaSignature(formula: string): string {
   return formula.replace(/(\$?[A-Z]{1,3})\$?\d+/g, "$1");
 }
 

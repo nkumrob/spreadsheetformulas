@@ -197,3 +197,64 @@ describe("number-format display", () => {
     session.destroy();
   });
 });
+
+describe("applyFixes — one-click cleanup", () => {
+  const MESSY: ParsedWorkbook = {
+    sheets: [
+      {
+        name: "S",
+        values: [
+          ["Customer", "Qty", "Price", "Total"],
+          ["  Acme  Co ", "3 ", 4.5, 13.5],
+          ["Borealis", 2, 12, 24],
+          ["Cobalt", 4, 10, 40],
+          ["Delta", 5, 10, 500],
+        ],
+        formulas: [
+          [null, null, null, null],
+          [null, null, null, "=B2*C2"],
+          [null, null, null, "=B3*C3"],
+          [null, null, null, "=B4*C4"],
+          [null, null, null, "=B5*C5+450"],
+        ],
+      },
+    ],
+  };
+
+  function findingsFor(session: WorkbookSession) {
+    return session.scanFindings();
+  }
+
+  it("trims spaces and harmonizes formulas (engine already parsed text numbers)", () => {
+    const session = WorkbookSession.open(MESSY);
+    const result = session.applyFixes(findingsFor(session));
+    expect(result.applied).toBeGreaterThanOrEqual(2);
+    // The engine parses "3 " to the number 3 at load, so the total is already live.
+    expect(session.cellView("S", 1, 3).display).toBe("13.5");
+    expect(session.cellContent("S", 1, 1)).toBe("3");
+    // Spaces cleaned.
+    expect(session.cellContent("S", 1, 0)).toBe("Acme Co");
+    // Pattern-breaking formula rewritten to the column's dominant shape, row-shifted.
+    expect(session.cellContent("S", 4, 3)).toBe("=B5*C5");
+    expect(session.cellView("S", 4, 3).display).toBe("50");
+    session.destroy();
+  });
+
+  it("skips unfixable findings and reports counts", () => {
+    const session = WorkbookSession.open(MESSY);
+    session.setCell("S", 5, 0, "=1/0"); // error cell — not auto-fixable
+    const result = session.applyFixes(findingsFor(session));
+    expect(result.skipped).toBeGreaterThanOrEqual(1);
+    expect(session.cellView("S", 5, 0).display).toBe("#DIV/0!");
+    session.destroy();
+  });
+
+  it("undo restores the pre-cleanup state", () => {
+    const session = WorkbookSession.open(MESSY);
+    const result = session.applyFixes(findingsFor(session));
+    session.undo(result.applied);
+    expect(session.cellContent("S", 1, 0)).toBe("  Acme  Co ");
+    expect(session.cellContent("S", 4, 3)).toBe("=B5*C5+450");
+    session.destroy();
+  });
+});

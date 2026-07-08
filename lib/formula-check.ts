@@ -28,7 +28,8 @@ export const ERROR_LINKS: Record<string, string> = {
 /** Functions the HyperFormula engine does not implement (probed against 3.3). */
 export const ENGINE_MISSING = new Set([
   "LOOKUP", "AVERAGEIFS", "TEXTBEFORE", "TEXTAFTER", "TEXTSPLIT",
-  "UNIQUE", "SORT", "RANK", "REGEXEXTRACT", "QUERY",
+  "UNIQUE", "SORT", "RANK", "REGEXEXTRACT", "REGEXMATCH", "REGEXREPLACE", "QUERY",
+  "LET", "XMATCH", "GOOGLEFINANCE", "SPARKLINE", "IMPORTRANGE", "CHOOSECOLS", "TOCOL",
 ]);
 
 const KNOWN_FUNCTIONS = new Set([

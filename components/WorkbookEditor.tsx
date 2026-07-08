@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { WorkbookSession } from "@/lib/workbook-session";
+import { WorkbookSession, FIXABLE_KINDS } from "@/lib/workbook-session";
 import {
   exportWorkbook,
   type FindingKind,
@@ -54,6 +54,7 @@ export default function WorkbookEditor({
   const [version, setVersion] = useState(0);
   const [findings, setFindings] = useState(initialFindings);
   const [edited, setEdited] = useState(false);
+  const [lastCleanup, setLastCleanup] = useState<number | null>(null);
   const [barDraft, setBarDraft] = useState("");
   const barFocused = useRef(false);
 
@@ -88,6 +89,22 @@ export default function WorkbookEditor({
     const next = session!.scanFindings();
     setFindings(next);
     track("tool_use", { tool: "workbook-rescan", findings: String(next.length) });
+  }
+
+  function fixAll() {
+    const { applied } = session!.applyFixes(findings);
+    setVersion((v) => v + 1);
+    setEdited(true);
+    setLastCleanup(applied);
+    setFindings(session!.scanFindings());
+    track("tool_use", { tool: "workbook-fix-all", applied: String(applied) });
+  }
+
+  function undoCleanup() {
+    session!.undo(lastCleanup ?? 0);
+    setVersion((v) => v + 1);
+    setLastCleanup(null);
+    setFindings(session!.scanFindings());
   }
 
   function download() {
@@ -216,13 +233,39 @@ export default function WorkbookEditor({
 
       {/* Findings */}
       <section aria-label="Findings" className="mt-8">
-        <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-display text-[22px] text-ink">
             {findings.length === 0 ? "No problems found" : `${findings.length} finding${findings.length === 1 ? "" : "s"}`}
           </h3>
-          {edited ? (
-            <span className="text-[12.5px] text-ink-faint">You&apos;ve made edits — hit Re-scan to refresh this list.</span>
-          ) : null}
+          <div className="flex items-center gap-2.5">
+            {lastCleanup !== null ? (
+              <>
+                <span role="status" className="text-[13px] font-medium text-ledger-deep">
+                  ✓ Fixed {lastCleanup} cell{lastCleanup === 1 ? "" : "s"}
+                </span>
+                {lastCleanup > 0 ? (
+                  <button
+                    type="button"
+                    onClick={undoCleanup}
+                    className="rounded-md border border-rule bg-white px-3 py-1.5 text-[13px] font-medium text-ink-soft shadow-bar hover:text-ink"
+                  >
+                    Undo
+                  </button>
+                ) : null}
+              </>
+            ) : null}
+            {findings.some((f) => FIXABLE_KINDS.has(f.kind)) ? (
+              <button
+                type="button"
+                onClick={fixAll}
+                className="rounded-md bg-ledger px-3.5 py-1.5 text-[13px] font-semibold text-paper hover:bg-ledger-deep"
+              >
+                Fix all fixable ({findings.filter((f) => FIXABLE_KINDS.has(f.kind)).length})
+              </button>
+            ) : edited && lastCleanup === null ? (
+              <span className="text-[12.5px] text-ink-faint">You&apos;ve made edits — hit Re-scan to refresh this list.</span>
+            ) : null}
+          </div>
         </div>
         {findings.length > 0 ? (
           <ul className="grid gap-2 sm:grid-cols-2">
