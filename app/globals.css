@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #faf7f1;
+  --cream: #f3eee4;
+  --ink: #1c1a16;
+  --ledger: #166b4a;
+  --rule: #dcd5c7;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: "ss01" on;
+  }
+
+  ::selection {
+    background: #c9e3d6;
+    color: #0e4a33;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ledger);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Faint spreadsheet-cell grid, used behind the hero and footer. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(28, 26, 22, 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(28, 26, 22, 0.055) 1px, transparent 1px);
+    background-size: 56px 40px;
+  }
+
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(to right, rgba(250, 247, 241, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(250, 247, 241, 0.05) 1px, transparent 1px);
+    background-size: 56px 40px;
+  }
+
+  /* Fades the grid out toward the edges so it feels like paper, not wireframe. */
+  .grid-fade {
+    -webkit-mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, black 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 90% 100% at 50% 0%, black 55%, transparent 100%);
+  }
+
+  .rule-t {
+    border-top: 1px solid var(--rule);
+  }
+
+  .rule-b {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Double hairline — the classic accounting "total" rule. */
+  .rule-total {
+    border-bottom: 1px solid var(--ink);
+    box-shadow: 0 3px 0 -1px var(--ink);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Staggered page-load reveal. Applied via .reveal + inline animation-delay. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: reveal 0.7s cubic-bezier(0.2, 0.65, 0.25, 1) forwards;
+  }
+
+  @keyframes reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* The blinking cell-cursor used in the wordmark and hero. */
+  .cursor-blink {
+    animation: cursor-blink 1.2s steps(1) infinite;
+  }
+
+  @keyframes cursor-blink {
+    50% {
+      opacity: 0.25;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
