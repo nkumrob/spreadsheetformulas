@@ -196,7 +196,19 @@ export const googleSheetsFormulas: Formula[] = [
     related: ["extract-email-domain", "create-pass-fail-status", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
-    verification: null,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Email", "Gmail?"],
+          ["ana@gmail.com", '=REGEXMATCH(A2,"@gmail\\.com$")'],
+          ["ben@acme.com", '=REGEXMATCH(A3,"@gmail\\.com$")'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: true },
+        { cell: "B3", value: false },
+      ],
+    },
   },
   {
     slug: "importrange-pull-data-between-sheets",

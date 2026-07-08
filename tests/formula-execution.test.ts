@@ -2,6 +2,7 @@ import { HyperFormula, DetailedCellError } from "hyperformula";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { allFormulas } from "@/lib/content";
 import { ENGINE_MISSING } from "@/lib/formula-check";
+import "@/lib/engine-extensions";
 
 /**
  * Layer-1 verification: every formula page's `verification` block is executed

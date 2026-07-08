@@ -125,7 +125,7 @@ describe("scanFindings — re-scan sees the live workbook (rescan bug)", () => {
 
   it("labels engine-gap formulas as cannot-evaluate, not user errors", () => {
     const session = WorkbookSession.open(WORKBOOK);
-    session.setCell("Sheet1", 9, 0, "=RANK(B2,B2:B3)");
+    session.setCell("Sheet1", 9, 0, "=XMATCH(B2,B2:B3)");
     const findings = session.scanFindings();
     expect(findings.find((f) => f.cell === "A10")?.kind).toBe("cannot-evaluate");
     session.destroy();
@@ -144,8 +144,8 @@ describe("engine-gap cells fall back to the file's cached value", () => {
         ],
         formulas: [
           [null, null],
-          [null, "=RANK(A2,$A$2:$A$3)"],
-          [null, "=RANK(A3,$A$2:$A$3)"],
+          [null, "=XMATCH(A2,$A$2:$A$3)"],
+          [null, "=XMATCH(A3,$A$2:$A$3)"],
         ],
       },
     ],
@@ -175,7 +175,7 @@ describe("engine-gap cells fall back to the file's cached value", () => {
     session.destroy();
     const reparsed = parseWorkbook(bytes);
     expect(reparsed.sheets[0].values[1][1]).toBe(2);
-    expect(reparsed.sheets[0].formulas[1][1]).toBe("=RANK(A2,$A$2:$A$3)");
+    expect(reparsed.sheets[0].formulas[1][1]).toBe("=XMATCH(A2,$A$2:$A$3)");
   });
 });
 

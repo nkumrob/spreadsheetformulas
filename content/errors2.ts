@@ -143,7 +143,22 @@ export const errorFixes2: Formula[] = [
     related: ["remove-duplicates", "fix-ref-error", "fix-name-error"],
     lastReviewed: "2026-07-08",
     published: true,
-    verification: null,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Customer", "Spill"],
+          ["Acme", "=UNIQUE(A2:A5)"],
+          ["Borealis", null],
+          ["Acme", null],
+          ["Cobalt", null],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Acme" },
+        { cell: "B3", value: "Borealis" },
+        { cell: "B4", value: "Cobalt" },
+      ],
+    },
   },
   {
     slug: "fix-num-error",

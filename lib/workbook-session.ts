@@ -1,3 +1,4 @@
+import "./engine-extensions";
 import { HyperFormula, DetailedCellError } from "hyperformula";
 import {
   analyzeWorkbook,

@@ -1,4 +1,5 @@
 import { read as readXlsx, write as writeXlsx, utils as xlsxUtils } from "xlsx";
+import "./engine-extensions";
 import { HyperFormula, DetailedCellError } from "hyperformula";
 import { ERROR_LINKS, ENGINE_MISSING, extractFunctions } from "./formula-check";
 

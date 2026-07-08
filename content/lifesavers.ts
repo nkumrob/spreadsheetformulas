@@ -212,6 +212,18 @@ export const lifesaverFormulas: Formula[] = [
     // arrays don't broadcast inside MID under the harness options — it
     // returns "" instead of "4521"). Both variants are hand-verified in
     // real Excel 365 and Google Sheets.
-    verification: null,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Text", "Extracted"],
+          ["Order #4521 (rush)", '=REGEXEXTRACT(A2,"[0-9]+")'],
+          ["Invoice 88", '=REGEXEXTRACT(A3,"[0-9]+")*1'],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "4521" },
+        { cell: "B3", value: 88 },
+      ],
+    },
   },
 ];

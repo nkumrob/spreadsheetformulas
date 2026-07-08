@@ -27,8 +27,9 @@ export const ERROR_LINKS: Record<string, string> = {
 
 /** Functions the HyperFormula engine does not implement (probed against 3.3). */
 export const ENGINE_MISSING = new Set([
-  "LOOKUP", "AVERAGEIFS", "TEXTBEFORE", "TEXTAFTER", "TEXTSPLIT",
-  "UNIQUE", "SORT", "RANK", "REGEXEXTRACT", "REGEXMATCH", "REGEXREPLACE", "QUERY",
+  // lib/engine-extensions.ts implements UNIQUE, RANK, TEXTBEFORE, TEXTAFTER,
+  // and the REGEX family — they are no longer gaps.
+  "LOOKUP", "AVERAGEIFS", "TEXTSPLIT", "SORT", "QUERY",
   "LET", "XMATCH", "GOOGLEFINANCE", "SPARKLINE", "IMPORTRANGE", "CHOOSECOLS", "TOCOL",
 ]);
 

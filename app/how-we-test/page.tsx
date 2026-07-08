@@ -27,7 +27,7 @@ export default function HowWeTestPage() {
     },
     {
       title: "Human review for engine gaps",
-      body: "A few modern functions (UNIQUE, TEXTSPLIT, REGEXEXTRACT, and other spill or platform-specific features) aren't implemented by the engine. Those pages are marked Human-reviewed: checked by hand in Excel and Google Sheets, with the review date shown on the page.",
+      body: "A few functions can't run headlessly (QUERY's SQL dialect, LET, and live-data features like GOOGLEFINANCE). We've extended the engine with our own tested implementations of several others it lacked — UNIQUE, RANK, TEXTBEFORE/TEXTAFTER, and the REGEX family — each covered by its own unit tests. Those pages are marked Human-reviewed: checked by hand in Excel and Google Sheets, with the review date shown on the page.",
     },
     {
       title: "You are the last test",

@@ -62,7 +62,23 @@ export const summarizingFormulas: Formula[] = [
     related: ["find-highest-value-by-category", "calculate-running-total", "count-if-multiple-conditions"],
     lastReviewed: "2026-07-08",
     published: true,
-    verification: null,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Deal", "Value", "Rank"],
+          ["Acme", 40, "=RANK(B2,$B$2:$B$5,0)"],
+          ["Borealis", 10, "=RANK(B3,$B$2:$B$5,0)"],
+          ["Cobalt", 40, "=RANK(B4,$B$2:$B$5,0)"],
+          ["Delta", 25, "=RANK(B5,$B$2:$B$5,1)"],
+        ],
+      },
+      expect: [
+        { cell: "C2", value: 1 },
+        { cell: "C3", value: 4 },
+        { cell: "C4", value: 1 },
+        { cell: "C5", value: 2 },
+      ],
+    },
   },
   {
     slug: "calculate-running-total",

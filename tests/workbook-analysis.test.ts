@@ -117,7 +117,7 @@ describe("recomputeFindings — engine recompute vs stored values", () => {
         {
           name: "S",
           values: [[2, 4, 8, "old", "x"]],
-          formulas: [[null, "=A1*2", "=A1*4", "=TODAY()-A1", "=RANK(A1,A1:B1)"]],
+          formulas: [[null, "=A1*2", "=A1*4", "=TODAY()-A1", "=XMATCH(A1,A1:B1)"]],
         },
       ],
     };

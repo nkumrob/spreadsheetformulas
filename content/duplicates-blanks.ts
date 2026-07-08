@@ -144,7 +144,23 @@ export const duplicatesBlanksFormulas: Formula[] = [
     lastReviewed: "2026-07-08",
     published: true,
     // UNIQUE is not implemented by the HyperFormula verification engine.
-    verification: null,
+    verification: {
+      sheets: {
+        Sheet1: [
+          ["Customer", "Unique"],
+          ["Acme", "=UNIQUE(A2:A6)"],
+          ["Borealis", null],
+          ["Acme", null],
+          ["Cobalt", null],
+          ["Borealis", null],
+        ],
+      },
+      expect: [
+        { cell: "B2", value: "Acme" },
+        { cell: "B3", value: "Borealis" },
+        { cell: "B4", value: "Cobalt" },
+      ],
+    },
   },
   {
     slug: "count-duplicates",
