@@ -25,7 +25,7 @@ export const dateFormulas: Formula[] = [
       { part: "MAX(0, …)", meaning: "Shows 0 instead of a negative number for items not yet due." },
     ],
     whenToUse:
-      "Use this for aging reports, overdue invoices, late tasks, and expired certifications — anywhere \"how late is it?\" matters more than a yes/no flag.",
+      "Use this for aging reports, overdue invoices, late tasks, and expired contracts — anywhere \"how late is it?\" matters more than a yes/no flag.",
     commonMistakes: [
       {
         mistake: "The result displays as a date like 1/14/1900 instead of a number.",

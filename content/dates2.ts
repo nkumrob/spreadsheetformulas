@@ -25,7 +25,7 @@ export const dates2Formulas: Formula[] = [
       { part: "MAX(0, …)", meaning: "Shows 0 instead of a negative number once the deadline has passed." },
     ],
     whenToUse:
-      "Use this for renewal reminders, project countdowns, contract expirations, and certification trackers — anywhere \"how long do I have?\" drives the next action.",
+      "Use this for renewal reminders, project countdowns, contract expirations, and warranty windows — anywhere \"how long do I have?\" drives the next action.",
     commonMistakes: [
       {
         mistake: "The result displays as a date like 1/7/1900 instead of a number.",

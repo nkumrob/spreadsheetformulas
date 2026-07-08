@@ -153,7 +153,7 @@ export const countingFormulas: Formula[] = [
       "percent complete",
       "task completion",
       "progress tracker",
-      "compliance rate",
+      "completion rate",
     ],
     problem:
       "You have a status column and need one number at the top of the sheet: what percentage of tasks, orders, or deliverables are complete?",

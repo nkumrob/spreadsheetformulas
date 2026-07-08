@@ -44,12 +44,6 @@ export const CATEGORIES: Category[] = [
     blurb: "#N/A, #VALUE!, #REF!, #DIV/0! — what they mean and how to fix them.",
   },
   {
-    slug: "hr-training",
-    name: "HR & Training",
-    cell: "G7",
-    blurb: "Tenure, headcount, time off, and people data.",
-  },
-  {
     slug: "finance-business",
     name: "Finance & Business",
     cell: "H8",

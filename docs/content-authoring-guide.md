@@ -23,7 +23,7 @@ contain double quotes: `'=IF(A2=B2,"Match","Mismatch")'`.
 | title | ≥8 chars, Title Case, benefit-oriented, no "How to" prefix |
 | seoTitle | 8–70 chars, includes "Excel" and/or "Google Sheets" where it fits |
 | description | 40–170 chars, one sentence, plain English |
-| category | one of: lookup-matching, text-cleanup, dates-deadlines, counting-summarizing, conditional-logic, error-fixes, hr-training, finance-business, small-business, google-sheets, excel |
+| category | one of: lookup-matching, text-cleanup, dates-deadlines, counting-summarizing, conditional-logic, error-fixes, finance-business, small-business, google-sheets, excel |
 | difficulty | beginner / intermediate / advanced |
 | functions | UPPERCASE function names used, e.g. `["COUNTIFS"]` |
 | keywords | 4–6 lowercase search phrases real users would type |
@@ -47,8 +47,8 @@ contain double quotes: `'=IF(A2=B2,"Match","Mismatch")'`.
 - Every formula must be CORRECT for both Excel and Google Sheets (or split via sheetsFormula).
   Prefer widely-compatible functions; call out version requirements (Excel 365/2021) in
   explanation or mistakes when using UNIQUE, FILTER, TEXTSPLIT, XLOOKUP, LET, etc.
-- Sample data people: Ana Torres, Ben Okafor, Cara Lim, Dana Cruz, Eli Ford. Departments:
-  Sales, Finance, Ops, HR. Dates as `"2026-07-01"` style strings. Money as plain numbers.
+- Sample data people: Ana Torres, Ben Okafor, Cara Lim, Dana Cruz, Eli Ford. Departments/regions:
+  Sales, Finance, Ops, East. Dates as `"2026-07-01"` style strings. Money as plain numbers.
 - Error cells in sample tables render red automatically when the string starts with `#`.
 - commonMistakes are the most valuable section — write the mistakes people actually make.
 
