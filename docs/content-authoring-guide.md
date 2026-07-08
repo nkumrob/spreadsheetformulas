@@ -69,7 +69,14 @@ find-highest-value-by-category, find-lowest-value-by-category, calculate-budget-
 calculate-profit-margin, calculate-invoice-due-date, calculate-inventory-reorder-status,
 calculate-sales-commission, track-job-applications, calculate-percentage-of-total,
 calculate-weighted-average, calculate-years-between-dates, average-by-category,
-count-unique-values, fix-name-error, fix-spill-error, fix-num-error,
+count-unique-values, query-filter-and-sort, arrayformula-apply-to-column,
+regexmatch-check-text-pattern, importrange-pull-data-between-sheets, sparkline-mini-chart-in-cell,
+googlefinance-live-stock-price, filter-rows-by-condition, let-readable-formulas,
+sequence-generate-numbers, sumproduct-conditional-math, switch-replace-nested-ifs,
+pmt-loan-payment, xlookup-vs-vlookup, countif-vs-countifs, sumif-vs-sumifs,
+calculate-sales-tax, calculate-discount-price, calculate-break-even-point,
+iferror-catch-formula-errors, substitute-find-and-replace, extract-numbers-from-text,
+fix-name-error, fix-spill-error, fix-num-error,
 fix-circular-reference, fix-formula-parse-error, vlookup-returns-wrong-value
 
 ## Error-fix pages (kind: "error-fix", category: "error-fixes")

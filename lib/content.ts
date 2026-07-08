@@ -13,6 +13,9 @@ import { financeFormulas } from "@/content/finance";
 import { businessFormulas } from "@/content/business";
 import { businessMetricsFormulas } from "@/content/business-metrics";
 import { googleSheetsFormulas } from "@/content/google-sheets";
+import { excelModernFormulas } from "@/content/excel-modern";
+import { comparisonsBusinessFormulas } from "@/content/comparisons-business";
+import { lifesaverFormulas } from "@/content/lifesavers";
 import { errorFixes2 } from "@/content/errors2";
 import { errorFixes3 } from "@/content/errors3";
 
@@ -31,6 +34,9 @@ const raw: Formula[] = [
   ...businessFormulas,
   ...businessMetricsFormulas,
   ...googleSheetsFormulas,
+  ...excelModernFormulas,
+  ...comparisonsBusinessFormulas,
+  ...lifesaverFormulas,
   ...errorFixes,
   ...errorFixes2,
   ...errorFixes3,
