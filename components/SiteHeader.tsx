@@ -19,6 +19,8 @@ const NAV = [
   { href: "/formulas", label: "Formulas" },
   { href: "/categories", label: "Categories" },
   { href: "/errors", label: "Error Fixes" },
+  { href: "/templates", label: "Templates" },
+  { href: "/tools", label: "Tools" },
 ];
 
 export function SiteHeader() {

@@ -9,6 +9,8 @@ export type SearchDoc = {
   categoryName: string;
   kind: Formula["kind"];
   functions: string[];
+  /** Lowercased seoTitle — used to detect "this page is THE tutorial for term X". */
+  seoTitle: string;
   /** token -> weight */
   tokens: Record<string, number>;
 };
@@ -34,8 +36,11 @@ export function tokenize(text: string): string[] {
 }
 
 function addTokens(bag: Record<string, number>, text: string, weight: number): void {
-  for (const token of tokenize(text)) {
-    bag[token] = Math.max(bag[token] ?? 0, weight);
+  // Weights accumulate across fields (deduped within a field): a page carrying a
+  // term in its functions AND keywords AND description is the dedicated tutorial
+  // for that term, and should outrank pages that merely use it once.
+  for (const token of new Set(tokenize(text))) {
+    bag[token] = (bag[token] ?? 0) + weight;
   }
 }
 
@@ -58,6 +63,7 @@ export function buildSearchIndex(formulas: Formula[]): SearchDoc[] {
         categoryName,
         kind: f.kind,
         functions: f.functions,
+        seoTitle: f.seoTitle.toLowerCase(),
         tokens,
       };
     });
@@ -86,6 +92,10 @@ export function searchFormulas(index: SearchDoc[], query: string): SearchResult[
         matched += 1;
         score += best;
         if (titleTokens.has(q)) score += 1;
+        // The page whose PRIMARY function this is beats pages that merely use it,
+        // and the dedicated tutorial (seoTitle leads with the term) beats both.
+        if (doc.functions[0]?.toLowerCase() === q) score += 3;
+        if (doc.seoTitle.startsWith(q)) score += 4;
       }
     }
     if (matched === 0) continue;

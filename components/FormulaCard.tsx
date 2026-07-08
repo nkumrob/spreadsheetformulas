@@ -11,7 +11,7 @@ export function FormulaCard({ formula, index }: { formula: Formula; index?: numb
   return (
     <Link
       href={formulaPath(formula)}
-      className="group flex h-full flex-col rounded-lg border border-rule bg-white p-5 shadow-bar transition-all duration-200 hover:-translate-y-0.5 hover:border-ink-faint hover:shadow-lift"
+      className="group flex h-full min-w-0 flex-col rounded-lg border border-rule bg-white p-5 shadow-bar transition-all duration-200 hover:-translate-y-0.5 hover:border-ink-faint hover:shadow-lift"
     >
       <div className="mb-3 flex items-center justify-between gap-2">
         <span

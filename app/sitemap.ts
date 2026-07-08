@@ -2,9 +2,22 @@ import type { MetadataRoute } from "next";
 import { allFormulas } from "@/lib/content";
 import { CATEGORIES } from "@/lib/categories";
 import { formulaPath, SITE_URL } from "@/lib/paths";
+import { TEMPLATES } from "@/lib/templates";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages = ["", "/formulas", "/errors", "/categories", "/search"].map((path) => ({
+  const staticPages = [
+    "",
+    "/formulas",
+    "/errors",
+    "/categories",
+    "/search",
+    "/templates",
+    "/tools",
+    "/tools/fix-formula",
+    "/tools/explain-formula",
+    "/tools/ai",
+    ...TEMPLATES.map((t) => `/templates/${t.slug}`),
+  ].map((path) => ({
     url: `${SITE_URL}${path}`,
     changeFrequency: "weekly" as const,
   }));

@@ -5,6 +5,7 @@ import { formulaPath } from "@/lib/paths";
 import { FormulaCard } from "@/components/FormulaCard";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { HeroSearch } from "@/components/HeroSearch";
+import { TEMPLATES } from "@/lib/templates";
 
 const POPULAR_PROBLEMS = [
   "compare two columns",
@@ -45,7 +46,27 @@ export default function HomePage() {
           <div className="reveal mt-9 max-w-xl" style={{ animationDelay: "240ms" }}>
             <HeroSearch />
           </div>
-          <div className="reveal mt-5 flex flex-wrap items-center gap-2" style={{ animationDelay: "320ms" }}>
+          <div className="reveal mt-5 flex flex-wrap items-center gap-4" style={{ animationDelay: "300ms" }}>
+            <Link
+              href="/tools/fix-formula"
+              className="text-[14px] font-semibold text-ink underline decoration-rust decoration-2 underline-offset-4 transition-colors hover:text-rust"
+            >
+              Fix my formula
+            </Link>
+            <Link
+              href="/tools/explain-formula"
+              className="text-[14px] font-semibold text-ink underline decoration-ledger decoration-2 underline-offset-4 transition-colors hover:text-ledger-deep"
+            >
+              Explain a formula
+            </Link>
+            <Link
+              href="/templates"
+              className="text-[14px] font-semibold text-ink underline decoration-gold decoration-2 underline-offset-4 transition-colors hover:text-gold"
+            >
+              Get a template
+            </Link>
+          </div>
+          <div className="reveal mt-6 flex flex-wrap items-center gap-2" style={{ animationDelay: "320ms" }}>
             <span className="text-[12.5px] text-ink-faint">Try:</span>
             {POPULAR_PROBLEMS.map((problem) => (
               <Link
@@ -128,6 +149,40 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Templates */}
+      <section aria-labelledby="templates" className="mx-auto max-w-page px-5 pt-16">
+        <div className="mb-7 flex items-end justify-between gap-4">
+          <div>
+            <h2 id="templates" className="font-display text-[32px] text-ink">
+              Skip the blank grid
+            </h2>
+            <p className="mt-2 text-[14.5px] text-ink-soft">
+              Trackers with the formulas already wired in — download, replace the sample rows, done.
+            </p>
+          </div>
+          <Link href="/templates" className="whitespace-nowrap text-[14px] font-medium text-ledger-deep hover:underline">
+            All templates →
+          </Link>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {TEMPLATES.slice(0, 3).map((template) => (
+            <Link
+              key={template.slug}
+              href={`/templates/${template.slug}`}
+              className="group flex flex-col rounded-lg border border-rule bg-white p-6 shadow-bar transition-all hover:-translate-y-0.5 hover:border-ink-faint hover:shadow-lift"
+            >
+              <h3 className="text-[16px] font-semibold leading-snug text-ink group-hover:text-ledger-deep">
+                {template.name}
+              </h3>
+              <p className="mt-2 line-clamp-2 text-[13.5px] leading-relaxed text-ink-soft">
+                {template.description}
+              </p>
+              <span className="mt-auto pt-4 font-mono text-[12px] text-ink-faint">.xlsx · free</span>
+            </Link>
+          ))}
         </div>
       </section>
 

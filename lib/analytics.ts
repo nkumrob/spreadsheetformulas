@@ -5,7 +5,9 @@ type EventName =
   | "search_query"
   | "newsletter_signup"
   | "feedback_vote"
-  | "related_click";
+  | "related_click"
+  | "tool_use"
+  | "template_download";
 
 declare global {
   interface Window {
