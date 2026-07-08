@@ -19,7 +19,11 @@ export type SheetData = {
   formats?: (string | null)[][];
 };
 
-export type ParsedWorkbook = { sheets: SheetData[] };
+export type ParsedWorkbook = {
+  sheets: SheetData[];
+  /** Human-readable notices for sheets clipped to the parse limits. */
+  truncated?: string[];
+};
 
 export type FindingKind =
   | "error-cell"
@@ -55,6 +59,7 @@ function cellAddress(row: number, col: number): string {
 export function parseWorkbook(data: ArrayBuffer | Uint8Array): ParsedWorkbook {
   const workbook = readXlsx(data, { type: "array", sheetStubs: true, cellNF: true });
   const sheets: SheetData[] = [];
+  const truncated: string[] = [];
 
   for (const name of workbook.SheetNames) {
     const ws = workbook.Sheets[name];
@@ -62,6 +67,11 @@ export function parseWorkbook(data: ArrayBuffer | Uint8Array): ParsedWorkbook {
     const range = xlsxUtils.decode_range(ws["!ref"]);
     const rows = Math.min(range.e.r + 1, MAX_ROWS);
     const cols = Math.min(range.e.c + 1, MAX_COLS);
+    if (range.e.r + 1 > MAX_ROWS || range.e.c + 1 > MAX_COLS) {
+      truncated.push(
+        `"${name}" was clipped to the first ${MAX_ROWS.toLocaleString()} rows × ${MAX_COLS} columns (it has ${(range.e.r + 1).toLocaleString()} × ${range.e.c + 1}).`,
+      );
+    }
 
     const values: CellValue[][] = [];
     const formulas: (string | null)[][] = [];
@@ -92,7 +102,7 @@ export function parseWorkbook(data: ArrayBuffer | Uint8Array): ParsedWorkbook {
     sheets.push({ name, values, formulas, formats });
   }
 
-  return { sheets };
+  return truncated.length > 0 ? { sheets, truncated } : { sheets };
 }
 
 const NUMBER_AS_TEXT = /^\s*-?\d+(\.\d+)?\s*$/;

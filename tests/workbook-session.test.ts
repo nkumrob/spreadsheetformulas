@@ -131,3 +131,69 @@ describe("scanFindings — re-scan sees the live workbook (rescan bug)", () => {
     session.destroy();
   });
 });
+
+describe("engine-gap cells fall back to the file's cached value", () => {
+  const GAP_WORKBOOK: ParsedWorkbook = {
+    sheets: [
+      {
+        name: "S",
+        values: [
+          ["Score", "Rank"],
+          [88, 2],
+          [95, 1],
+        ],
+        formulas: [
+          [null, null],
+          [null, "=RANK(A2,$A$2:$A$3)"],
+          [null, "=RANK(A3,$A$2:$A$3)"],
+        ],
+      },
+    ],
+  };
+
+  it("displays the cached value instead of #NAME?", () => {
+    const session = WorkbookSession.open(GAP_WORKBOOK);
+    const view = session.cellView("S", 1, 1);
+    expect(view.display).toBe("2");
+    expect(view.isCached).toBe(true);
+    expect(view.isError).toBe(false);
+    session.destroy();
+  });
+
+  it("stops using the cached value once the cell is edited", () => {
+    const session = WorkbookSession.open(GAP_WORKBOOK);
+    session.setCell("S", 1, 1, "=A2*2");
+    const view = session.cellView("S", 1, 1);
+    expect(view.display).toBe("176");
+    expect(view.isCached).toBeFalsy();
+    session.destroy();
+  });
+
+  it("exports the cached value alongside the formula", () => {
+    const session = WorkbookSession.open(GAP_WORKBOOK);
+    const bytes = exportWorkbook(session.snapshot());
+    session.destroy();
+    const reparsed = parseWorkbook(bytes);
+    expect(reparsed.sheets[0].values[1][1]).toBe(2);
+    expect(reparsed.sheets[0].formulas[1][1]).toBe("=RANK(A2,$A$2:$A$3)");
+  });
+});
+
+describe("number-format display", () => {
+  it("renders thousands and currency formats readably", () => {
+    const wb: ParsedWorkbook = {
+      sheets: [
+        {
+          name: "S",
+          values: [[18450.5, 1250]],
+          formulas: [[null, null]],
+          formats: [["#,##0", '"$"#,##0.00']],
+        },
+      ],
+    };
+    const session = WorkbookSession.open(wb);
+    expect(session.cellView("S", 0, 0).display).toBe("18,451");
+    expect(session.cellView("S", 0, 1).display).toBe("$1,250.00");
+    session.destroy();
+  });
+});

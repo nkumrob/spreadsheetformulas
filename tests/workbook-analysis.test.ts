@@ -143,3 +143,23 @@ describe("testFormula — run a user formula against their workbook", () => {
     expect(testFormula(SYNTHETIC, "Sheet1", "hello").ok).toBe(false);
   });
 });
+
+describe("parseWorkbook — limits and formats (known-issues batch)", () => {
+  it("reports truncation instead of clipping silently", async () => {
+    const { utils, write } = await import("xlsx");
+    const big = Array.from({ length: 2100 }, (_, i) => [i, i * 2]);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, utils.aoa_to_sheet(big), "Big");
+    const parsed = parseWorkbook(write(wb, { type: "array", bookType: "xlsx" }) as ArrayBuffer);
+    expect(parsed.sheets[0].values).toHaveLength(2000);
+    expect(parsed.truncated?.[0]).toContain("Big");
+  });
+
+  it("reads legacy .xls files", async () => {
+    const { utils, write } = await import("xlsx");
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, utils.aoa_to_sheet([["Name", "Qty"], ["Ana", 3]]), "Old");
+    const parsed = parseWorkbook(write(wb, { type: "array", bookType: "biff8" }) as ArrayBuffer);
+    expect(parsed.sheets[0].values[1]).toEqual(["Ana", 3]);
+  });
+});

@@ -204,8 +204,15 @@ export default function WorkbookEditor({
 
       <p className="mt-2 text-[12px] text-ink-faint">
         Click a cell to select · double-click or Enter to edit · arrows to move · edits recompute
-        instantly · nothing leaves your browser.
+        instantly · nothing leaves your browser. <em>Italic cells</em> show your file&apos;s saved
+        value for formulas our engine can&apos;t recalculate. Downloads carry values, formulas, and
+        number formats — charts and cell styling from the original aren&apos;t included.
       </p>
+      {workbook.truncated?.map((notice) => (
+        <p key={notice} className="mt-2 rounded-md bg-gold-tint px-3 py-2 text-[12.5px] text-gold">
+          {notice} Edits and downloads cover the loaded portion only.
+        </p>
+      ))}
 
       {/* Findings */}
       <section aria-label="Findings" className="mt-8">

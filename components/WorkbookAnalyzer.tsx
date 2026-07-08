@@ -28,8 +28,8 @@ export function WorkbookAnalyzer() {
       setState({ phase: "idle", error: "That file is over 8 MB — trim it down or split it first." });
       return;
     }
-    if (!/\.(xlsx|csv)$/i.test(file.name)) {
-      setState({ phase: "idle", error: "Upload an .xlsx or .csv file. From Google Sheets: File → Download → .xlsx." });
+    if (!/\.(xlsx|xls|csv)$/i.test(file.name)) {
+      setState({ phase: "idle", error: "Upload an .xlsx, .xls, or .csv file. From Google Sheets: File → Download → .xlsx." });
       return;
     }
     setState({ phase: "working", name: file.name });
@@ -47,7 +47,7 @@ export function WorkbookAnalyzer() {
       track("tool_use", { tool: "workbook-analyzer", findings: String(findings.length) });
       setState({ phase: "ready", name: file.name, workbook, findings });
     } catch {
-      setState({ phase: "idle", error: "That file couldn't be read. If it's an old .xls, re-save it as .xlsx and try again." });
+      setState({ phase: "idle", error: "That file couldn't be read. Try re-saving it as .xlsx first." });
     }
   }
 
@@ -102,7 +102,7 @@ export function WorkbookAnalyzer() {
         <input
           ref={inputRef}
           type="file"
-          accept=".xlsx,.csv"
+          accept=".xlsx,.xls,.csv"
           className="hidden"
           aria-label="Upload a spreadsheet"
           onChange={(e) => {
@@ -124,7 +124,7 @@ export function WorkbookAnalyzer() {
         ) : null}
       </div>
       <p className="mt-3 text-[12.5px] text-ink-faint">
-        .xlsx or .csv, up to 8 MB. From Google Sheets: File → Download → Microsoft Excel (.xlsx).
+        .xlsx, .xls, or .csv, up to 8 MB. From Google Sheets: File → Download → Microsoft Excel (.xlsx).
       </p>
     </div>
   );

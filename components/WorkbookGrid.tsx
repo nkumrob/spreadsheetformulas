@@ -129,6 +129,7 @@ export function WorkbookGrid({
         <td
           key={c}
           data-cell={`${colLetter(c)}${r + 1}`}
+          title={view.isCached ? "Value from your file — our engine can't recalculate this formula" : undefined}
           onMouseDown={(e) => {
             if (editing && !isSelected) commitEdit(null);
             e.preventDefault();
@@ -142,7 +143,7 @@ export function WorkbookGrid({
               : view.isNumber
                 ? "tabular text-right font-mono text-[12.5px] text-ink"
                 : "whitespace-nowrap text-ink-soft"
-          } ${view.isFormula && !view.isError ? "text-ledger-deep" : ""}`}
+          } ${view.isFormula && !view.isError ? "text-ledger-deep" : ""} ${view.isCached ? "italic opacity-75" : ""}`}
           style={{ minWidth: COL_W, maxWidth: COL_W, height: ROW_H }}
         >
           {isEditing ? (

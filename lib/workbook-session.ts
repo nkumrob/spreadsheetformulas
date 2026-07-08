@@ -13,6 +13,8 @@ export type CellView = {
   isFormula: boolean;
   isError: boolean;
   isNumber: boolean;
+  /** True when showing the file's cached value because the engine can't run the formula. */
+  isCached?: boolean;
 };
 
 const ENGINE_OPTIONS = { licenseKey: "gpl-v3", dateFormats: ["YYYY-MM-DD", "MM/DD/YYYY"] };
@@ -41,6 +43,9 @@ export class WorkbookSession {
     private names: string[],
     private formats: Map<string, string>,
     private baseDims: Map<string, { rows: number; cols: number }>,
+    /** Original file values for formula cells, keyed "sheet:r:c" — the fallback
+     *  when the engine can't evaluate a formula the file had already computed. */
+    private cached: Map<string, { formula: string; value: CellValue }>,
   ) {}
 
   private assertAlive(): void {
@@ -59,6 +64,7 @@ export class WorkbookSession {
     const hf = HyperFormula.buildFromSheets(sheets, ENGINE_OPTIONS, LITERALS);
     const formats = new Map<string, string>();
     const dims = new Map<string, { rows: number; cols: number }>();
+    const cached = new Map<string, { formula: string; value: CellValue }>();
     for (const sheet of workbook.sheets) {
       dims.set(sheet.name, { rows: sheet.values.length, cols: sheet.values[0]?.length ?? 0 });
       sheet.formats?.forEach((row, r) =>
@@ -66,8 +72,16 @@ export class WorkbookSession {
           if (format) formats.set(`${sheet.name}:${r}:${c}`, format);
         }),
       );
+      sheet.formulas.forEach((row, r) =>
+        row.forEach((formula, c) => {
+          const value = sheet.values[r][c];
+          if (formula && value !== null && !(typeof value === "string" && value.startsWith("#"))) {
+            cached.set(`${sheet.name}:${r}:${c}`, { formula, value });
+          }
+        }),
+      );
     }
-    return new WorkbookSession(hf, workbook.sheets.map((s) => s.name), formats, dims);
+    return new WorkbookSession(hf, workbook.sheets.map((s) => s.name), formats, dims, cached);
   }
 
   sheetNames(): string[] {
@@ -94,8 +108,18 @@ export class WorkbookSession {
     const value = this.hf.getCellValue(address);
     const isFormula = this.hf.doesCellHaveFormula(address);
     if (value instanceof DetailedCellError) {
+      // Engine can't run it, but the file already knew the answer: show that.
+      const original = this.cached.get(`${sheet}:${row}:${col}`);
+      if (original && this.hf.getCellFormula(address) === original.formula) {
+        const view = this.renderValue(sheet, row, col, original.value, isFormula);
+        return { ...view, isCached: true };
+      }
       return { display: value.value, isFormula, isError: true, isNumber: false };
     }
+    return this.renderValue(sheet, row, col, value as CellValue, isFormula);
+  }
+
+  private renderValue(sheet: string, row: number, col: number, value: CellValue, isFormula: boolean): CellView {
     if (value === null || value === "") {
       return { display: "", isFormula, isError: false, isNumber: false };
     }
@@ -106,6 +130,19 @@ export class WorkbookSession {
       }
       if (format && format.includes("%")) {
         return { display: `${trimNumber(value * 100)}%`, isFormula, isError: false, isNumber: true };
+      }
+      if (format && /#,##0/.test(format)) {
+        const decimals = /0\.00/.test(format) ? 2 : 0;
+        const grouped = value.toLocaleString("en-US", {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals,
+        });
+        return {
+          display: format.includes("$") ? `$${grouped}` : grouped,
+          isFormula,
+          isError: false,
+          isNumber: true,
+        };
       }
       return { display: trimNumber(value), isFormula, isError: false, isNumber: true };
     }
@@ -178,13 +215,13 @@ export class WorkbookSession {
           for (let c = 0; c < width; c++) {
             const address = { sheet: id, row: r, col: c };
             const value = this.hf.getCellValue(address);
-            valueRow.push(
-              value instanceof DetailedCellError
-                ? errorsAsStrings
-                  ? value.value
-                  : null
-                : (value as CellValue),
-            );
+            if (value instanceof DetailedCellError) {
+              const original = this.cached.get(`${name}:${r}:${c}`);
+              const usable = original && this.hf.getCellFormula(address) === original.formula;
+              valueRow.push(usable ? original.value : errorsAsStrings ? value.value : null);
+            } else {
+              valueRow.push(value as CellValue);
+            }
             formulaRow.push(this.hf.getCellFormula(address) ?? null);
             formatRow.push(this.formats.get(`${name}:${r}:${c}`) ?? null);
           }

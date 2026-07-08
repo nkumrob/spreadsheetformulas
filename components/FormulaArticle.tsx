@@ -126,7 +126,26 @@ export function FormulaArticle({ formula }: { formula: Formula }) {
             </ul>
           </section>
 
-          <div className="mt-14 rounded-lg border border-rule bg-cream/70 p-6">
+          {isError ? (
+            <div className="mt-14 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-ledger/30 bg-ledger-tint/40 p-6">
+              <div>
+                <p className="text-[15px] font-semibold text-ink">
+                  Got a file full of these?
+                </p>
+                <p className="mt-1 text-[13.5px] text-ink-soft">
+                  Open it in your browser — every error cell gets highlighted with its fix. Nothing is uploaded.
+                </p>
+              </div>
+              <Link
+                href="/tools/analyze-workbook"
+                className="shrink-0 rounded-lg bg-ledger px-4 py-2.5 text-[13.5px] font-semibold text-paper hover:bg-ledger-deep"
+              >
+                Open my spreadsheet
+              </Link>
+            </div>
+          ) : null}
+
+          <div className="mt-8 rounded-lg border border-rule bg-cream/70 p-6">
             <FeedbackWidget slug={formula.slug} />
           </div>
 
