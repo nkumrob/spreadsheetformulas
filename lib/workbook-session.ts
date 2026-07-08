@@ -1,5 +1,6 @@
 import { HyperFormula, DetailedCellError } from "hyperformula";
-import type { CellValue, ParsedWorkbook } from "./workbook-analysis";
+import { analyzeWorkbook, type CellValue, type ParsedWorkbook, type WorkbookFinding } from "./workbook-analysis";
+import { ENGINE_MISSING, extractFunctions } from "./formula-check";
 
 /**
  * A live, editable workbook: HyperFormula holds the state, edits recompute
@@ -133,6 +134,36 @@ export class WorkbookSession {
 
   /** Current state (computed values + formulas + original formats) for export. */
   snapshot(): ParsedWorkbook {
+    return this.buildSnapshot(false);
+  }
+
+  /**
+   * Re-scan the LIVE workbook. Unlike snapshot() (which nulls error values so
+   * exports stay clean), the analysis view keeps computed errors as their
+   * error strings — otherwise a re-scan is blind to every error cell.
+   * Engine-gap formulas (#NAME? from functions the engine lacks) are
+   * reclassified as cannot-evaluate rather than blamed on the user.
+   */
+  scanFindings(): WorkbookFinding[] {
+    return analyzeWorkbook(this.buildSnapshot(true)).findings.map((finding) => {
+      if (
+        finding.kind === "error-cell" &&
+        finding.link === "/errors/fix-name-error" &&
+        finding.formula &&
+        extractFunctions(finding.formula).some((fn) => ENGINE_MISSING.has(fn))
+      ) {
+        return {
+          ...finding,
+          kind: "cannot-evaluate" as const,
+          detail: `${finding.formula} uses a function our engine can't run — not checked, not necessarily wrong.`,
+          link: undefined,
+        };
+      }
+      return finding;
+    });
+  }
+
+  private buildSnapshot(errorsAsStrings: boolean): ParsedWorkbook {
     return {
       sheets: this.names.map((name) => {
         const id = this.sheetId(name);
@@ -147,7 +178,13 @@ export class WorkbookSession {
           for (let c = 0; c < width; c++) {
             const address = { sheet: id, row: r, col: c };
             const value = this.hf.getCellValue(address);
-            valueRow.push(value instanceof DetailedCellError ? null : (value as CellValue));
+            valueRow.push(
+              value instanceof DetailedCellError
+                ? errorsAsStrings
+                  ? value.value
+                  : null
+                : (value as CellValue),
+            );
             formulaRow.push(this.hf.getCellFormula(address) ?? null);
             formatRow.push(this.formats.get(`${name}:${r}:${c}`) ?? null);
           }

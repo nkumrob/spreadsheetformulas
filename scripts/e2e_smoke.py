@@ -85,6 +85,16 @@ with sync_playwright() as p:
     page.wait_for_timeout(400)
     check("edit recomputed dependent", page.locator('[data-cell="D2"]').inner_text().strip() == "500")
     check("download button present", page.locator("text=Download fixed .xlsx").count() == 1)
+    # Introduce an error, Re-scan must surface it in the findings list.
+    page.click('[data-cell="A10"]')
+    page.keyboard.type("=1/0")
+    page.keyboard.press("Enter")
+    page.click("text=Re-scan")
+    page.wait_for_timeout(500)
+    check(
+        "rescan surfaces new error cell",
+        page.locator('section[aria-label="Findings"] button:has-text("A10")').count() == 1,
+    )
 
     # 8. Error page + 404.
     page.goto(f"{BASE}/errors/fix-spill-error")

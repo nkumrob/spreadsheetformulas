@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { WorkbookSession } from "@/lib/workbook-session";
 import {
-  analyzeWorkbook,
   exportWorkbook,
   type FindingKind,
   type ParsedWorkbook,
@@ -86,9 +85,9 @@ export default function WorkbookEditor({
   }
 
   function rescan() {
-    const report = analyzeWorkbook(session!.snapshot());
-    setFindings(report.findings);
-    track("tool_use", { tool: "workbook-rescan", findings: String(report.findings.length) });
+    const next = session!.scanFindings();
+    setFindings(next);
+    track("tool_use", { tool: "workbook-rescan", findings: String(next.length) });
   }
 
   function download() {

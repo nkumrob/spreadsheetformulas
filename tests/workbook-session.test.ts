@@ -103,3 +103,31 @@ describe("exportWorkbook — .xlsx round trip", () => {
     expect(sheet.formulas[1][3]).toBe("=B2*C2");
   });
 });
+
+describe("scanFindings — re-scan sees the live workbook (rescan bug)", () => {
+  it("reports an error cell introduced by editing", () => {
+    const session = WorkbookSession.open(WORKBOOK);
+    session.setCell("Sheet1", 9, 0, "=1/0");
+    const findings = session.scanFindings();
+    const error = findings.find((f) => f.kind === "error-cell");
+    expect(error?.cell).toBe("A10");
+    expect(error?.link).toBe("/errors/fix-div0-error");
+    session.destroy();
+  });
+
+  it("clears the finding once the cell is fixed", () => {
+    const session = WorkbookSession.open(WORKBOOK);
+    session.setCell("Sheet1", 9, 0, "=1/0");
+    session.setCell("Sheet1", 9, 0, "=D2/B2");
+    expect(session.scanFindings().filter((f) => f.kind === "error-cell")).toHaveLength(0);
+    session.destroy();
+  });
+
+  it("labels engine-gap formulas as cannot-evaluate, not user errors", () => {
+    const session = WorkbookSession.open(WORKBOOK);
+    session.setCell("Sheet1", 9, 0, "=RANK(B2,B2:B3)");
+    const findings = session.scanFindings();
+    expect(findings.find((f) => f.cell === "A10")?.kind).toBe("cannot-evaluate");
+    session.destroy();
+  });
+});

@@ -22,6 +22,7 @@ export const ERROR_LINKS: Record<string, string> = {
   "#NAME?": "/errors/fix-name-error",
   "#SPILL!": "/errors/fix-spill-error",
   "#NUM!": "/errors/fix-num-error",
+  "#CYCLE!": "/errors/fix-circular-reference",
 };
 
 /** Functions the HyperFormula engine does not implement (probed against 3.3). */
