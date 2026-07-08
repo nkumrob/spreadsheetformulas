@@ -68,16 +68,23 @@ with sync_playwright() as p:
     with urllib.request.urlopen(request) as response:
         check("xlsx download 200", response.status == 200)
 
-    # 7. Workbook analyzer: upload our own template, expect report + live formula test.
+    # 7. Workbook editor: upload a template, edit a cell, dependent recomputes live.
     page.goto(f"{BASE}/tools/analyze-workbook")
     page.wait_for_load_state("networkidle")
     page.set_input_files("input[type=file]", "public/templates/budget-tracker.xlsx")
-    page.wait_for_selector("text=budget-tracker.xlsx", timeout=15000)
-    check("analyzer parsed workbook", "cells" in page.content() and "formulas" in page.content())
-    page.fill("textarea", "=SUM(B2:B6)")
-    page.click("text=Run it")
-    page.wait_for_timeout(1500)
-    check("analyzer computed user formula", "25600" in page.content())
+    page.wait_for_selector('[data-cell="A1"]', timeout=20000)
+    check("editor opened workbook grid", page.locator('[data-cell="B2"]').inner_text().strip() != "")
+    # Select C2 (Rent actual, 2500) and check the formula bar mirrors it.
+    page.click('[data-cell="C2"]')
+    check("formula bar mirrors selection", page.get_attribute('input[aria-label="Formula bar"]', "value") == "2500")
+    # Edit C2 to 3000 → D2 (=C2-B2, budget 2500) must recompute to 500.
+    page.dblclick('[data-cell="C2"]')
+    page.keyboard.press("Meta+a")
+    page.keyboard.type("3000")
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(400)
+    check("edit recomputed dependent", page.locator('[data-cell="D2"]').inner_text().strip() == "500")
+    check("download button present", page.locator("text=Download fixed .xlsx").count() == 1)
 
     # 8. Error page + 404.
     page.goto(f"{BASE}/errors/fix-spill-error")

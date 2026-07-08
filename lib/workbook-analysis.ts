@@ -1,4 +1,4 @@
-import { read as readXlsx, utils as xlsxUtils } from "xlsx";
+import { read as readXlsx, write as writeXlsx, utils as xlsxUtils } from "xlsx";
 import { HyperFormula, DetailedCellError } from "hyperformula";
 import { ERROR_LINKS, ENGINE_MISSING, extractFunctions } from "./formula-check";
 
@@ -15,6 +15,8 @@ export type SheetData = {
   values: CellValue[][];
   /** "="-prefixed formula per cell, or null. Same dimensions as values. */
   formulas: (string | null)[][];
+  /** Excel number-format string per cell (e.g. "yyyy-mm-dd"), where present. */
+  formats?: (string | null)[][];
 };
 
 export type ParsedWorkbook = { sheets: SheetData[] };
@@ -51,7 +53,7 @@ function cellAddress(row: number, col: number): string {
 
 /** Parse an .xlsx/.csv ArrayBuffer or Buffer into plain grids. */
 export function parseWorkbook(data: ArrayBuffer | Uint8Array): ParsedWorkbook {
-  const workbook = readXlsx(data, { type: "array", sheetStubs: true });
+  const workbook = readXlsx(data, { type: "array", sheetStubs: true, cellNF: true });
   const sheets: SheetData[] = [];
 
   for (const name of workbook.SheetNames) {
@@ -63,14 +65,17 @@ export function parseWorkbook(data: ArrayBuffer | Uint8Array): ParsedWorkbook {
 
     const values: CellValue[][] = [];
     const formulas: (string | null)[][] = [];
+    const formats: (string | null)[][] = [];
     for (let r = 0; r < rows; r++) {
       const valueRow: CellValue[] = [];
       const formulaRow: (string | null)[] = [];
+      const formatRow: (string | null)[] = [];
       for (let c = 0; c < cols; c++) {
         const cell = ws[cellAddress(r, c)];
         if (!cell) {
           valueRow.push(null);
           formulaRow.push(null);
+          formatRow.push(null);
           continue;
         }
         // Error cells: surface the display string ("#DIV/0!"), not the code.
@@ -78,11 +83,13 @@ export function parseWorkbook(data: ArrayBuffer | Uint8Array): ParsedWorkbook {
         else if (cell.t === "z") valueRow.push(null);
         else valueRow.push(cell.v ?? null);
         formulaRow.push(cell.f ? `=${cell.f}` : null);
+        formatRow.push(cell.z && cell.z !== "General" ? String(cell.z) : null);
       }
       values.push(valueRow);
       formulas.push(formulaRow);
+      formats.push(formatRow);
     }
-    sheets.push({ name, values, formulas });
+    sheets.push({ name, values, formulas, formats });
   }
 
   return { sheets };
@@ -251,6 +258,45 @@ export function recomputeFindings(workbook: ParsedWorkbook): WorkbookFinding[] {
 
   hf.destroy();
   return findings;
+}
+
+/** Serialize a (possibly edited) workbook back to .xlsx bytes for download. */
+export function exportWorkbook(workbook: ParsedWorkbook): Uint8Array {
+  const out = xlsxUtils.book_new();
+  for (const sheet of workbook.sheets) {
+    const ws: Record<string, unknown> = {};
+    let maxRow = 0;
+    let maxCol = 0;
+    for (let r = 0; r < sheet.values.length; r++) {
+      for (let c = 0; c < sheet.values[r].length; c++) {
+        const value = sheet.values[r][c];
+        const formula = sheet.formulas[r]?.[c] ?? null;
+        if (value === null && !formula) continue;
+        maxRow = Math.max(maxRow, r);
+        maxCol = Math.max(maxCol, c);
+        const cell: Record<string, unknown> = {};
+        if (formula) cell.f = formula.slice(1);
+        if (typeof value === "number") {
+          cell.v = value;
+          cell.t = "n";
+        } else if (typeof value === "boolean") {
+          cell.v = value;
+          cell.t = "b";
+        } else if (typeof value === "string" && value !== "") {
+          cell.v = value;
+          cell.t = "s";
+        } else if (!formula) {
+          continue;
+        }
+        const format = sheet.formats?.[r]?.[c];
+        if (format) cell.z = format;
+        ws[cellAddress(r, c)] = cell;
+      }
+    }
+    ws["!ref"] = `A1:${cellAddress(maxRow, maxCol)}`;
+    xlsxUtils.book_append_sheet(out, ws, sheet.name.slice(0, 31));
+  }
+  return writeXlsx(out, { type: "array", bookType: "xlsx" }) as Uint8Array;
 }
 
 export type TestResult = { ok: true; value: CellValue } | { ok: false; error: string };

@@ -2,21 +2,22 @@ import type { Metadata } from "next";
 import { WorkbookAnalyzer } from "@/components/WorkbookAnalyzer";
 
 export const metadata: Metadata = {
-  title: "Spreadsheet Health Check — Analyze Your Workbook",
+  title: "Open & Fix Your Spreadsheet — Editable Health Check",
   description:
-    "Upload an Excel or CSV file and get an instant health report: error cells, stale values, numbers stored as text, and inconsistent formulas. Your file never leaves your browser.",
+    "Upload an Excel or CSV file and it opens right in your browser: edit cells, fix formulas, watch everything recompute live, and download the repaired file. Nothing is uploaded to a server.",
 };
 
 export default function AnalyzeWorkbookPage() {
   return (
     <div className="mx-auto max-w-page px-5 pt-12">
       <header className="max-w-prose">
-        <p className="font-mono text-[13px] font-medium tracking-wide text-ledger">=CHECKUP(your_spreadsheet)</p>
-        <h1 className="mt-3 font-display text-[44px] leading-tight text-ink">Spreadsheet health check</h1>
+        <p className="font-mono text-[13px] font-medium tracking-wide text-ledger">=OPEN(your_spreadsheet)</p>
+        <h1 className="mt-3 font-display text-[44px] leading-tight text-ink">Open &amp; fix your spreadsheet</h1>
         <p className="mt-3 text-[16px] leading-relaxed text-ink-soft">
-          Drop in a workbook and get an instant report: error cells with fix guides, saved values
-          that no longer match their formulas, numbers stored as text, formulas that quietly
-          differ from the rest of their column — then test new formulas against your real data.
+          Your file opens here as a live, editable grid. Problem cells are highlighted — errors,
+          stale values, numbers stored as text, formulas that break their column&apos;s pattern.
+          Click any cell to inspect its formula, edit it, watch dependents recompute instantly,
+          and download the repaired .xlsx when you&apos;re done.
         </p>
       </header>
       <div className="mt-10 pb-4">

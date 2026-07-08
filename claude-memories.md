@@ -15,7 +15,8 @@
 - Content is typed TS data (content/*.ts) validated by Zod at build time — NOT MDX (deviation from SF-010; structured fields fit the §10 page anatomy better). 12 formula pages + 4 error-fix pages seeded, all formulas verified logically; error fixes live at /errors/[slug], formulas at /formulas/[slug] (lib/paths.ts routes by kind).
 - Search is build-time index + client-side scoring (lib/search.ts), tested against PRD §11 queries. Platform preference persists in localStorage (sf-platform). Feedback + copy + search events funnel through lib/analytics.ts (Plausible-ready, no-op until script added).
 - Newsletter posts to /api/subscribe; forwards to NEWSLETTER_WEBHOOK_URL env var when set.
-- **Port 3000 is occupied by another app on this machine ("NATO Phonetic")** — always use another port (e.g. 4123) for local servers.
+- **Port 3000 is occupied by another app on this machine ("NATO Phonetic")** — always use another port (e.g. 4123) for local servers. The user's own `npm run dev` for THIS project therefore lands on port 3001.
+- **CRITICAL: never run bare `next build`/`next start` in this repo — always prefix `NEXT_DIST_DIR=.next-verify`.** The user keeps a long-running `next dev` session; bare builds rewrite `.next` under it and 500 every page (this was the "site keeps breaking" incident). next.config.mjs honors NEXT_DIST_DIR; `.next-verify` is gitignored.
 - Visual QA done via Playwright screenshots at 1440px and 375px on home, formula, error, search, categories — all clean, no horizontal scroll on mobile.
 - Remaining for launch (see mvp-execution-tickets.md): 38 more formula pages, 6 more error pages, templates (SF-041/042/087), explainer/fixer tools (E5), real analytics + newsletter provider wiring, e2e suite (SF-090).
 
