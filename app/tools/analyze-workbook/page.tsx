@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { WorkbookAnalyzer } from "@/components/WorkbookAnalyzer";
 
 export const metadata: Metadata = {
-  title: "Open & Fix Your Spreadsheet — Editable Health Check",
+  title: "Open & Repair Excel Files Online Free — Nothing Uploaded",
   description:
     "Upload an Excel or CSV file and it opens right in your browser: edit cells, fix formulas, watch everything recompute live, and download the repaired file. Nothing is uploaded to a server.",
 };

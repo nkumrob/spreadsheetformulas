@@ -79,7 +79,7 @@ class SpreadsheetFormulasPlugin extends FunctionPlugin {
     },
     UNIQUE: {
       method: "unique",
-      arraySizeMethod: "uniqueArraySize",
+      sizeOfResultArrayMethod: "uniqueArraySize",
       parameters: [{ argumentType: FunctionArgumentType.RANGE }],
     },
   };

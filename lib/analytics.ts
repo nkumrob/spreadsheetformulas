@@ -7,7 +7,8 @@ type EventName =
   | "feedback_vote"
   | "related_click"
   | "tool_use"
-  | "template_download";
+  | "template_download"
+  | "proof_download";
 
 declare global {
   interface Window {

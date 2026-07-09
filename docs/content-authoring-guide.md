@@ -76,7 +76,18 @@ sequence-generate-numbers, sumproduct-conditional-math, switch-replace-nested-if
 pmt-loan-payment, xlookup-vs-vlookup, countif-vs-countifs, sumif-vs-sumifs,
 calculate-sales-tax, calculate-discount-price, calculate-break-even-point,
 iferror-catch-formula-errors, substitute-find-and-replace, extract-numbers-from-text,
-fix-name-error, fix-spill-error, fix-num-error,
+calculate-days-between-dates, business-days-between-dates, add-business-days-to-date,
+get-month-name-from-date, get-quarter-from-date, last-day-of-month, first-day-of-next-month,
+check-if-date-is-weekend, if-cell-contains-text, if-between-two-values, if-cell-is-not-empty,
+nested-if-statements, if-or-multiple-conditions, if-and-or-combined, return-blank-instead-of-zero,
+check-if-value-in-list, calculate-cagr, calculate-roi, calculate-gross-profit,
+calculate-simple-interest, calculate-average-order-value, calculate-churn-rate,
+calculate-runway-months, calculate-currency-conversion, index-match-vs-xlookup,
+sumifs-vs-sumproduct, iferror-vs-ifna, count-vs-counta-vs-countblank, search-vs-find,
+concatenate-vs-textjoin, today-vs-now, vlookup-vs-hlookup, if-vs-ifs,
+two-way-lookup-index-match, lookup-with-multiple-criteria, extract-text-between-characters,
+count-words-in-cell, swap-first-and-last-name, remove-characters-from-text,
+lock-cell-reference-dollar-sign, fix-name-error, fix-spill-error, fix-num-error,
 fix-circular-reference, fix-formula-parse-error, vlookup-returns-wrong-value
 
 ## Error-fix pages (kind: "error-fix", category: "error-fixes")

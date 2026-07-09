@@ -10,6 +10,11 @@ import { summarizingFormulas } from "@/content/summarizing";
 import { text2Formulas } from "@/content/text2";
 import { logicFormulas } from "@/content/logic";
 import { financeFormulas } from "@/content/finance";
+import { finance2Formulas } from "@/content/finance2";
+import { dates3Formulas } from "@/content/dates3";
+import { logic2Formulas } from "@/content/logic2";
+import { comparisons2Formulas } from "@/content/comparisons2";
+import { tasksMiscFormulas } from "@/content/tasks-misc";
 import { businessFormulas } from "@/content/business";
 import { businessMetricsFormulas } from "@/content/business-metrics";
 import { googleSheetsFormulas } from "@/content/google-sheets";
@@ -31,6 +36,11 @@ const raw: Formula[] = [
   ...text2Formulas,
   ...logicFormulas,
   ...financeFormulas,
+  ...finance2Formulas,
+  ...dates3Formulas,
+  ...logic2Formulas,
+  ...comparisons2Formulas,
+  ...tasksMiscFormulas,
   ...businessFormulas,
   ...businessMetricsFormulas,
   ...googleSheetsFormulas,

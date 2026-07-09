@@ -32,3 +32,14 @@ describe("template library integrity (SF-041/042/087)", () => {
     }
   });
 });
+
+describe("proof sheets (SEO Engine 4)", () => {
+  it("every engine-verified page has a downloadable proof sheet", async () => {
+    const { allFormulas } = await import("@/lib/content");
+    for (const formula of allFormulas) {
+      if (!formula.verification) continue;
+      const path = join(__dirname, "..", "public", "proofs", `${formula.slug}.xlsx`);
+      expect(existsSync(path), `${formula.slug} proof missing — run npx tsx scripts/build-proof-sheets.ts`).toBe(true);
+    }
+  });
+});

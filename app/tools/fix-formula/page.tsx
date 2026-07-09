@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { FixerClient } from "@/components/FixerClient";
 
 export const metadata: Metadata = {
-  title: "Formula Fixer — Check a Broken Formula",
+  title: "Free Formula Checker — Fix Excel & Google Sheets Formulas Online",
   description:
     "Paste a broken Excel or Google Sheets formula and get instant checks for smart quotes, unbalanced parentheses, missing VLOOKUP arguments, and more.",
 };

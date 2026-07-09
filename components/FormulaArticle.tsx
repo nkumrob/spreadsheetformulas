@@ -7,6 +7,7 @@ import { FormulaBar } from "./FormulaBar";
 import { PlatformTabs } from "./PlatformTabs";
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { FeedbackWidget } from "./FeedbackWidget";
+import { ProofDownload } from "./ProofDownload";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
@@ -151,9 +152,13 @@ export function FormulaArticle({ formula }: { formula: Formula }) {
 
           <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[12px] text-ink-faint">
             {formula.verification ? (
-              <span className="inline-flex items-center gap-1.5 rounded border border-ledger/30 bg-ledger-tint/60 px-2 py-0.5 font-medium text-ledger-deep">
-                <span aria-hidden="true">✓</span> Engine-verified against the sample data above
-              </span>
+              <>
+                <span className="inline-flex items-center gap-1.5 rounded border border-ledger/30 bg-ledger-tint/60 px-2 py-0.5 font-medium text-ledger-deep">
+                  <span aria-hidden="true">✓</span> Engine-verified against the sample data above
+                </span>
+                <span aria-hidden="true">·</span>
+                <ProofDownload slug={formula.slug} />
+              </>
             ) : (
               <span>Human-reviewed</span>
             )}
