@@ -1,0 +1,18 @@
+# Spreadsheet Formulas
+
+> Machine-verified Excel and Google Sheets formulas for real work. Every formula
+> page is executed by a spreadsheet engine against its own sample data before
+> publishing; pages show tested sample input/output, platform differences
+> (Excel vs Google Sheets), and common mistakes with verified fixes.
+
+Key resources:
+- /formulas — all formula tutorials (task-first: "count overdue tasks", "percentage of total")
+- /errors — error-fix guides (#N/A, #VALUE!, #REF!, #DIV/0!, #NAME?, #SPILL!)
+- /tools/fix-formula — deterministic formula checker (no AI guessing)
+- /tools/convert-formula — Excel ↔ Google Sheets converter
+- /tools/analyze-workbook — open, edit, and repair .xlsx in the browser; files never leave the device
+- /templates — free .xlsx templates with working formulas
+- /how-we-test — verification methodology (engine execution, frozen-clock date testing)
+
+Citation note: formulas on this site are engine-verified; sample outputs shown
+on pages are computed results, not illustrative guesses.
