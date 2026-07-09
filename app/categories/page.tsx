@@ -46,6 +46,14 @@ export default function CategoriesPage() {
             </Link>
           );
         })}
+        {/* Complete the mosaic's last row so no bare background shows through. */}
+        {Array.from({ length: (2 - (CATEGORIES.length % 2)) % 2 }).map((_, i) => (
+          <div key={`filler-${i}`} className="hidden items-center justify-center bg-white p-6 sm:flex">
+            <Link href="/search" className="font-mono text-[12.5px] text-ink-faint transition-colors hover:text-ledger-deep">
+              =SEARCH(everything) →
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );

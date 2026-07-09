@@ -225,6 +225,19 @@ export default function HomePage() {
               </Link>
             );
           })}
+          {/* Complete the mosaic's last row so no bare background shows through. */}
+          {Array.from({ length: (3 - (CATEGORIES.length % 3)) % 3 }).map((_, i) => (
+            <div key={`lg-filler-${i}`} className="hidden items-center justify-center bg-white p-5 lg:flex">
+              {i === 0 ? (
+                <Link href="/search" className="font-mono text-[12.5px] text-ink-faint transition-colors hover:text-ledger-deep">
+                  =SEARCH(everything) →
+                </Link>
+              ) : null}
+            </div>
+          ))}
+          {Array.from({ length: (2 - (CATEGORIES.length % 2)) % 2 }).map((_, i) => (
+            <div key={`sm-filler-${i}`} className="hidden bg-white p-5 sm:block lg:hidden" />
+          ))}
         </div>
         <p className="mt-4 font-mono text-[12px] text-ink-faint">
           {categoriesWithContent.length} of {CATEGORIES.length} categories live · new formulas added weekly
