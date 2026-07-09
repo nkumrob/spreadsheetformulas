@@ -144,10 +144,10 @@ export function ExplainerClient() {
 
               <p className="text-[12.5px] leading-relaxed text-ink-faint">
                 This is a structural explanation from our function guide — it describes what the
-                pieces do, not whether the logic fits your data. Want a full plain-English
-                walkthrough of any formula?{" "}
-                <Link href="/tools/ai" className="font-medium text-ledger-deep hover:underline">
-                  Join the AI explainer waitlist
+                pieces do, not whether the logic fits your data. To see it run against real
+                numbers,{" "}
+                <Link href="/tools/analyze-workbook" className="font-medium text-ledger-deep hover:underline">
+                  open your spreadsheet
                 </Link>
                 .
               </p>

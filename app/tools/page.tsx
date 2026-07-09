@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Free Spreadsheet Tools",
   description:
-    "Free tools for Excel and Google Sheets: check a broken formula, get a plain-English explanation, and join the waitlist for AI-powered formula generation.",
+    "Free tools for Excel and Google Sheets: fix a broken formula, get a plain-English explanation, open and repair your workbook, and convert formulas between platforms.",
 };
 
 const TOOLS = [
@@ -39,14 +39,6 @@ const TOOLS = [
     blurb:
       "Moving between platforms? Get the equivalent formula — direct renames, structural rewrites, version warnings, and honest dead-ends instead of guesses.",
     live: true,
-  },
-  {
-    href: "/tools/ai",
-    mark: "=AI()",
-    name: "AI Formula Generator",
-    blurb:
-      "Describe your problem in plain English, get a working formula with assumptions and sample data. In development — every output tested against our formula library.",
-    live: false,
   },
 ];
 
