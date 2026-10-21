@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Instrument_Serif, Schibsted_Grotesk, Spline_Sans_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { RetirementGuideCard } from "@/components/RetirementGuideCard";
 import { SITE_NAME, SITE_URL } from "@/lib/paths";
 import "./globals.css";
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col">
         <SiteHeader />
         <main className="flex-1">{children}</main>
+        <RetirementGuideCard />
         <SiteFooter />
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-X0NHVVQFKJ" strategy="afterInteractive" />
         <Script id="ga4-init" strategy="afterInteractive">
